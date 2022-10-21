@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "787181895524",
+    "project_id": "money-jar-financial",
+    "storage_bucket": "money-jar-financial.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787181895524:android:d2cd038b925ae511010471",
+        "android_client_info": {
+          "package_name": "host.exp.exponent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787181895524-blpp09b48556ipher7os0pj7kdpk0h40.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZNqsy28N_u1onokhvyvCL0LLI6P2L10s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787181895524-blpp09b48556ipher7os0pj7kdpk0h40.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "787181895524-gs40rvu9ff7h56bskvu5omeuq34c02bc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.exp.exponent"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
