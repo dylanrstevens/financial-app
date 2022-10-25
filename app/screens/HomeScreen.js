@@ -74,14 +74,11 @@ const HomeScreen = ({deleteAccount, deleteALL, AddAccount, getAccountData, data}
             {/**Footer*/}
             <View className="flex-grow">
                 <View className="flex-row flex-grow">
-                    <Ripple rippleCentered={true} className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
-                        <PlusCircleIcon size={35} color="#0F57B3"/>
-                    </Ripple>
-                    <Ripple rippleCentered={true} className="bg-gray-100 border-t w-1/3 items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
-                        <SquaresPlusIcon size={50} color={"#0F57B3"}/>
-                    </Ripple>
-                    <Ripple rippleCentered={true} className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
-                        <MinusCircleIcon size={35} color={"#0F57B3"}/>
+                    <Ripple rippleCentered={true} className="bg-gray-100 border-t w-screen items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
+                        <SquaresPlusIcon size={50} color={"#072D5C"}/>
+                        <Text>
+                            Add Account
+                        </Text>
                     </Ripple>
                 </View>
             </View>
