@@ -15,11 +15,8 @@ import {
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"
 import MoneyJar from '../components/MoneyJar'
 
-import * as SQLite from "expo-sqlite"
 
-const db = SQLite.openDatabase("AppDB");
-
-const HomeScreen = () => {
+const HomeScreen = ({deleteALL, AddAccount}) => {
 
     const navigation = useNavigation();
     useLayoutEffect(() => {
@@ -30,39 +27,7 @@ const HomeScreen = () => {
         }); 
     }, [])
 
-    useEffect(() => {
-        db.transaction((tx) => {
-          tx.executeSql(
-            "create table if not exists Accounts (id integer primary key not null, name text, money real);"
-          );
-        });
-      }, []);
-
-      const deleteALL = () => {
-
-        db.transaction(
-            (tx) => {
-                tx.executeSql("delete from Accounts")
-            }
-        )
-      }
-
-      const AddAccount = (name) => {
-        // is text empty?
-        if (name === null || name === "") {
-          return false;
-        }
     
-        db.transaction(
-          (tx) => {
-            tx.executeSql("insert into Accounts (name, money) values (?, 0)", [name]);
-            tx.executeSql("select * from Accounts", [], (_, { rows }) =>
-              console.log(JSON.stringify(rows))
-            );
-          },
-        );
-      };
-      deleteALL()
     return (
         <View className="min-h-screen flex flex-col">
             {/**Header*/}

@@ -2,7 +2,7 @@ import { View, Text, TextInput, Pressable, Keyboard, TouchableOpacity } from 're
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const AddAccountScreen = (props) => {
+const AddAccountScreen = ({deleteALL, AddAccount}) => {
 
     const [accountName, setAccountName] = useState("")
     const [accountValue, setAccountValue] = useState("")
@@ -21,7 +21,7 @@ const AddAccountScreen = (props) => {
                     <TextInput value={accountValue} placeholder='Starting Amount' keyboardType='decimal-pad' onChangeText={(accountValue) => setAccountValue(accountValue) } className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-4 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
                 </View>
                 <View className="items-center p-5">
-                    <TouchableOpacity onPress={() => console.log(accountName + " " + accountValue)} className="bg-[#0F57B3] w-24 h-10 rounded-lg flex-row items-center justify-center">
+                    <TouchableOpacity onPress={() => AddAccount(accountName, parseFloat(accountValue))} className="bg-[#0F57B3] w-24 h-10 rounded-lg flex-row items-center justify-center">
                         <Text className="text-white text-lg">
                             Add
                         </Text>
