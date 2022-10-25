@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect, useEffect } from 'react'
+import { View, Text, SafeAreaView, TextInput, ScrollView, Pressable } from 'react-native'
+import React, { useLayoutEffect, useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import {
     AdjustmentsVerticalIcon,
@@ -14,9 +14,10 @@ import {
 } from "react-native-heroicons/outline"
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"
 import MoneyJar from '../components/MoneyJar'
+import Ripple from 'react-native-material-ripple'
 
+const HomeScreen = ({deleteAccount, deleteALL, AddAccount, getAccountData, data}) => {
 
-const HomeScreen = ({deleteALL, AddAccount, getAccountData, data}) => {
 
     const navigation = useNavigation();
     useLayoutEffect(() => {
@@ -25,22 +26,10 @@ const HomeScreen = ({deleteALL, AddAccount, getAccountData, data}) => {
             headerShown: false,
 
         }); 
-    }, [])
-
-    const accounts = [];
+    }, []) 
 
     getAccountData()
-    //console.log(data)
-    for (let account in data) {
-        accounts.push(data[account]["name"])
-    }
-    
-    const accountList = []
 
-    accounts.forEach((item,index)=>{
-        accountList.push( <MoneyJar key={index} title={item}></MoneyJar>)
-    })
-    
 
     return (
         <View className="min-h-screen flex flex-col">
@@ -75,8 +64,9 @@ const HomeScreen = ({deleteALL, AddAccount, getAccountData, data}) => {
                     }}
                 >
                     <View className="items-center">
-                
-                        {accountList}
+                        {data.map((accounts) => (
+                            <MoneyJar deleteAccount={deleteAccount} title={accounts.name} ammount={accounts.money} key={accounts.id} val={accounts.id}></MoneyJar>
+                        ))}
                     </View>
                 
                 </ScrollView>
@@ -84,15 +74,15 @@ const HomeScreen = ({deleteALL, AddAccount, getAccountData, data}) => {
             {/**Footer*/}
             <View className="flex-grow">
                 <View className="flex-row flex-grow">
-                    <TouchableOpacity className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
+                    <Ripple rippleCentered={true} className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
                         <PlusCircleIcon size={35} color="#0F57B3"/>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="bg-gray-100 border-t w-1/3 items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
+                    </Ripple>
+                    <Ripple rippleCentered={true} className="bg-gray-100 border-t w-1/3 items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
                         <SquaresPlusIcon size={50} color={"#0F57B3"}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
+                    </Ripple>
+                    <Ripple rippleCentered={true} className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
                         <MinusCircleIcon size={35} color={"#0F57B3"}/>
-                    </TouchableOpacity>
+                    </Ripple>
                 </View>
             </View>
             

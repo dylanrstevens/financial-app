@@ -4,13 +4,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from './screens/HomeScreen';
 import AddAccountScreen from './screens/AddAccountScreen';
 import * as SQLite from "expo-sqlite"
+import EditAccountScreen from './screens/EditAccountScreen';
 const db = SQLite.openDatabase("AppDB");
 
 const Stack = createNativeStackNavigator();
 
 const StackNavigator = () => {
 
-    const [data, setData] = useState(null)
+    const [data, setData] = useState([])
 
     const AddAccount = (name, money) => {
         // is text empty?
@@ -29,13 +30,10 @@ const StackNavigator = () => {
         db.transaction(
             (tx) => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
-                const values = _array;
-                setData(values)
-            }
-            );
-            },
-            null,
-            
+                    const values = _array;
+                    setData(values)
+                }
+            )}            
         )
     }
 
@@ -44,6 +42,16 @@ const StackNavigator = () => {
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts")
+            }
+        )
+    }
+
+
+    const deleteAccount = (id) => {
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Accounts where id = ?", [id])
             }
         )
     }
@@ -59,12 +67,19 @@ const StackNavigator = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Home">
-                {(props) => <HomeScreen data={data} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
+                {(props) => <HomeScreen deleteAccount={deleteAccount} data={data} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
+
             <Stack.Screen name="AddAccount"
-                options={{ presentation: 'modal', headerShown: false }}
+                options={{ presentation: 'card', headerShown: false }}
             >
                 {(props) => <AddAccountScreen deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
+            </Stack.Screen>
+
+            <Stack.Screen name="EditAccount"
+                options={{ presentation: 'modal', headerShown: false }}
+            >   
+                {(props) => <EditAccountScreen title deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
         </Stack.Navigator>
         
