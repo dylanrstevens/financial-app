@@ -16,7 +16,7 @@ const MoneyJar = ({deleteAccount, title, ammount, val }) => {
     
     return (
         <View>
-            <Ripple rippleCentered={true} className="p-5 items-center flex-row bg-gray-100 rounded-2xl" onPress={() => navigation.navigate("EditAccount", {title: title})}>
+            <Ripple rippleCentered={true} className="p-5 items-center flex-row bg-gray-100 rounded-2xl" onPress={() => navigation.navigate("EditAccount", {title, ammount, val})}>
 
                 <CreditCardIcon color={'#072D5C'} size={80}/>
                 <View className="flex-col px-4">

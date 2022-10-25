@@ -76,11 +76,10 @@ const StackNavigator = () => {
                 {(props) => <AddAccountScreen deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
 
-            <Stack.Screen name="EditAccount"
+            <Stack.Screen name="EditAccount" component={EditAccountScreen}
                 options={{ presentation: 'modal', headerShown: false }}
-            >   
-                {(props) => <EditAccountScreen title deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
-            </Stack.Screen>
+            />   
+            
         </Stack.Navigator>
         
     )
