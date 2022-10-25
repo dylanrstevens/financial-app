@@ -16,7 +16,7 @@ import {
 import MoneyJar from '../components/MoneyJar'
 
 
-const HomeScreen = ({deleteALL, AddAccount}) => {
+const HomeScreen = ({deleteALL, AddAccount, getAccountData, data}) => {
 
     const navigation = useNavigation();
     useLayoutEffect(() => {
@@ -27,7 +27,21 @@ const HomeScreen = ({deleteALL, AddAccount}) => {
         }); 
     }, [])
 
+    const accounts = [];
+
+    getAccountData()
+    //console.log(data)
+    for (let account in data) {
+        accounts.push(data[account]["name"])
+    }
     
+    const accountList = []
+
+    accounts.forEach((item,index)=>{
+        accountList.push( <MoneyJar key={index} title={item}></MoneyJar>)
+    })
+    
+
     return (
         <View className="min-h-screen flex flex-col">
             {/**Header*/}
@@ -61,12 +75,8 @@ const HomeScreen = ({deleteALL, AddAccount}) => {
                     }}
                 >
                     <View className="items-center">
-                        <MoneyJar title={"Savings"}/>
-                        <MoneyJar title={"Travel"}/>
-                        <MoneyJar title={"Groceries"}/>
-                        <MoneyJar title={"Spending Money"}/>
-                        <MoneyJar title={"School Expenses"}/>
-
+                
+                        {accountList}
                     </View>
                 
                 </ScrollView>
