@@ -5,6 +5,7 @@ import StackNavigator from './StackNavigator';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  
   return (
     <NavigationContainer>
         <StackNavigator/>

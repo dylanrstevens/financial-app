@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView, TouchableOpacity } from 'react-native'
-import React, { useLayoutEffect } from 'react'
+import React, { useLayoutEffect, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import {
     AdjustmentsVerticalIcon,
@@ -15,6 +15,10 @@ import {
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"
 import MoneyJar from '../components/MoneyJar'
 
+import * as SQLite from "expo-sqlite"
+
+const db = SQLite.openDatabase("AppDB");
+
 const HomeScreen = () => {
 
     const navigation = useNavigation();
@@ -26,6 +30,39 @@ const HomeScreen = () => {
         }); 
     }, [])
 
+    useEffect(() => {
+        db.transaction((tx) => {
+          tx.executeSql(
+            "create table if not exists Accounts (id integer primary key not null, name text, money real);"
+          );
+        });
+      }, []);
+
+      const deleteALL = () => {
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Accounts")
+            }
+        )
+      }
+
+      const AddAccount = (name) => {
+        // is text empty?
+        if (name === null || name === "") {
+          return false;
+        }
+    
+        db.transaction(
+          (tx) => {
+            tx.executeSql("insert into Accounts (name, money) values (?, 0)", [name]);
+            tx.executeSql("select * from Accounts", [], (_, { rows }) =>
+              console.log(JSON.stringify(rows))
+            );
+          },
+        );
+      };
+      deleteALL()
     return (
         <View className="min-h-screen flex flex-col">
             {/**Header*/}
@@ -75,7 +112,7 @@ const HomeScreen = () => {
                     <TouchableOpacity className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
                         <PlusCircleIcon size={35} color="#0F57B3"/>
                     </TouchableOpacity>
-                    <TouchableOpacity className="bg-gray-100 border-t w-1/3 items-center justify-center">
+                    <TouchableOpacity className="bg-gray-100 border-t w-1/3 items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
                         <SquaresPlusIcon size={50} color={"#0F57B3"}/>
                     </TouchableOpacity>
                     <TouchableOpacity className="bg-gray-100 border-x border-t w-1/3 items-center justify-center">
@@ -83,12 +120,15 @@ const HomeScreen = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            
 
             {/**LITTLE SPACE AT BOTTOM TO GIVE ROOM FOR SWIPE UP BAR */}
             
         
         </View>
+
     )
 }
 
+//onPress={() => AddAccount("A")}
 export default HomeScreen
