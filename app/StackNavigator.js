@@ -61,7 +61,7 @@ const StackNavigator = () => {
             </Stack.Screen>
 
             <Stack.Screen name="AddAccount"
-                options={{ presentation: 'modal', headerShown: false }}
+                options={{presentation:'containedTransparentModal', headerShown: false, gestureDirection:'vertical', gestureEnabled:true}}
             >
                 {(props) => <AddAccountScreen deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>

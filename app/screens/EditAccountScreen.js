@@ -9,6 +9,7 @@ import {
     PlusCircleIcon,
     PlusIcon
 } from "react-native-heroicons/outline"
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures'
 
 const db = SQLite.openDatabase("AppDB");
 
@@ -49,15 +50,15 @@ const EditAccountScreen = ({route}) => {
         <View>
             <Pressable onPress={Keyboard.dismiss} className="h-screen bg-white">
                 <View className="h-2/3">
-                    <View className="p-4 bg-white shadow-sm">
-                        <Text className="font-normal text-4xl text-center text-[#8cbbf1] pt-10">
+                    <View className="p-4 bg-white shadow-md shadow-gray-300 rounded-lg">
+                        <Text className="font-normal text-4xl text-center text-gray-600 pt-4">
                             {route.params["title"]}
                         </Text>
-                        <Text className="font-normal text-lg text-center text-gray-400 pb-6">
+                        <Text className="font-normal text-lg text-center text-gray-400 pb-4">
                             Current: ${route.params["ammount"]}
                         </Text>
                     </View>
-                    <View className="pt-12 pb-10 items-center">
+                    <View className="pt-20 pb-10 items-center">
                         <TextInput value={accountValue} placeholder='Ammount' keyboardType='decimal-pad' onChangeText={(accountValue) => setAccountValue(accountValue) } className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block w-1/2 p-4 shadow-sm shadow-gray-300"/>
                     </View>
                     <View className="items-center p-5 flex-row justify-center">
