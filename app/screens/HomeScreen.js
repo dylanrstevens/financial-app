@@ -34,31 +34,31 @@ const HomeScreen = ({deleteAccount, deleteALL, AddAccount, getAccountData, data}
     return (
         <View className="min-h-screen flex flex-col">
             {/**Header*/}
-            <SafeAreaView className="bg-white pt-5">
-                <View>
+            <SafeAreaView className="bg-[#8cbbf1] pt-5">
+                <View className="shadow-lg shadow-gray-400">
                     {/**Title and Icons*/}
                     <View className="flex-row pb-3 items-center mx-4 space-x-2">
-                        <Bars3Icon size={35} color="#000000"/>
-                        <Text className="font-bold text-2xl text-center p-3 flex-1">
+                        {/**<Bars3Icon size={35} color="#FFFFFF"/>*/}
+                        <Text className="font-normal text-3xl text-center p-3 flex-1 text-white">
                             Your Accounts
                         </Text>
-                        <UserIcon size={35} color={"#000000"}/>
+                        {/**<UserIcon size={35} color={"#FFFFFF"}/>*/}
                     </View>
 
                     {/**Search */}
                     <View className="flex-row items-center space-x-2 pb-3 mx-4">
-                        <View className="flex-row space-x-2 flex-1 bg-gray-100 p-1.5">
+                        <View className="flex-row space-x-2 flex-1 bg-gray-100 p-1.5 rounded-md">
                             <MagnifyingGlassCircleIcon color={"#000000"}/>
                             <TextInput placeholder='Search' keyboardType="default"/>
                         </View>
-                        <AdjustmentsVerticalIcon color={"#000000"}/>
+                        <AdjustmentsVerticalIcon color={"#FFFFFF"}/>
                     </View>
                 </View>
             </SafeAreaView>
             {/**Body*/}
             <View className="h-2/3">
                 <ScrollView
-                    className="bg-gray-200"
+                    className="bg-white"
                     contentContainerStyle={{
                         paddingBottom: 0,
                     }}
@@ -74,12 +74,14 @@ const HomeScreen = ({deleteAccount, deleteALL, AddAccount, getAccountData, data}
             {/**Footer*/}
             <View className="flex-grow">
                 <View className="flex-row flex-grow">
-                    <Ripple rippleCentered={true} className="bg-gray-100 border-t w-screen items-center justify-center" onPress={() => navigation.navigate("AddAccount")}>
-                        <SquaresPlusIcon size={50} color={"#072D5C"}/>
-                        <Text>
-                            Add Account
-                        </Text>
-                    </Ripple>
+                    <View className="bg-white w-screen items-center justify-center pb-8">
+                        <Ripple rippleCentered={true} className="flex-row items-center bg-white px-8 py-2 rounded-3xl shadow-xl shadow-gray-400" onPress={() => navigation.navigate("AddAccount")}>
+                            <SquaresPlusIcon size={50} color={"#8cbbf1"}/>
+                            <Text className="text-[#8cbbf1] font-medium text-lg px-2">
+                                Add Account
+                            </Text>
+                        </Ripple>
+                    </View>
                 </View>
             </View>
             

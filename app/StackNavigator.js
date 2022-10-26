@@ -46,16 +46,6 @@ const StackNavigator = () => {
         )
     }
 
-
-    const deleteAccount = (id) => {
-
-        db.transaction(
-            (tx) => {
-                tx.executeSql("delete from Accounts where id = ?", [id])
-            }
-        )
-    }
-
     useEffect(() => {
     db.transaction((tx) => {
         tx.executeSql(
@@ -67,11 +57,11 @@ const StackNavigator = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Home">
-                {(props) => <HomeScreen deleteAccount={deleteAccount} data={data} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
+                {(props) => <HomeScreen data={data} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
 
             <Stack.Screen name="AddAccount"
-                options={{ presentation: 'card', headerShown: false }}
+                options={{ presentation: 'modal', headerShown: false }}
             >
                 {(props) => <AddAccountScreen deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
