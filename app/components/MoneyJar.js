@@ -18,14 +18,21 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
     const [showModal, setShowModal] = useState(false)
     const [accountValue, setAccountValue] = useState("")
 
-    const navigation = useNavigation();
+    const setModal = () => {
+        setShowModal(true)
+    }
+
+    const unsetModal = () => {
+        setShowModal(false)
+        setAccountValue("")
+    }
     
     return (
         <View>
             {/**Modal for edit account */}
             <Modal 
             isVisible={showModal}
-            onSwipeComplete={() => setShowModal(false)}
+            onSwipeComplete={() => unsetModal()}
             swipeDirection="down"
             backdropOpacity={0.4}
             animationInTiming={300}

@@ -21,11 +21,12 @@ const EditAccountScreen = ({route}) => {
     const [accountValue, setAccountValue] = useState("")
 
     const AddToAccountValue = (amt, id) => {
-    db.transaction(
+        db.transaction(
             (tx) => {
             tx.executeSql("update Accounts set money = money+? where id=?", [amt, id]);
             },
         );
+        getAccountData()
     }; 
 
     const SubFromAccountValue = (amt, id) => {

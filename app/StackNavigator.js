@@ -89,17 +89,6 @@ const StackNavigator = () => {
             <Stack.Screen name="Home">
                 {(props) => <HomeScreen data={data} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
-
-            <Stack.Screen name="AddAccount"
-                options={{presentation:'containedTransparentModal', headerShown: false, gestureDirection:'vertical', gestureEnabled:true}}
-            >
-                {(props) => <AddAccountScreen deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
-            </Stack.Screen>
-
-            <Stack.Screen name="EditAccount" component={EditAccountScreen}
-                options={{ presentation: 'modal', headerShown: false }}
-            />   
-            
         </Stack.Navigator>
         
     )
