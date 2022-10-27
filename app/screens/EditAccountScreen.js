@@ -34,6 +34,7 @@ const EditAccountScreen = ({route}) => {
             tx.executeSql("update Accounts set money = money-? where id=?", [amt, id]);
             },
         );
+        getAccountData()
     }; 
 
     const deleteAccount = (id) => {
@@ -42,6 +43,18 @@ const EditAccountScreen = ({route}) => {
             (tx) => {
                 tx.executeSql("delete from Accounts where id = ?", [id])
             }
+        )
+        getAccountData()
+    }
+
+    const getAccountData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setData(values)
+                }
+            )}            
         )
     }
 

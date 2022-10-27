@@ -24,6 +24,8 @@ const StackNavigator = () => {
             tx.executeSql("insert into Accounts (name, money) values (?, ?)", [name, money]);
           },
         );
+
+        getAccountData()
       }; 
 
     const getAccountData = () => {
@@ -35,6 +37,34 @@ const StackNavigator = () => {
                 }
             )}            
         )
+    }
+
+    const AddToAccountValue = (amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Accounts set money = money+? where id=?", [amt, id]);
+            },
+        );
+        getAccountData()
+    }; 
+
+    const SubFromAccountValue = (amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Accounts set money = money-? where id=?", [amt, id]);
+            },
+        );
+        getAccountData()
+    }; 
+
+    const deleteAccount = (id) => {
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Accounts where id = ?", [id])
+            }
+        )
+        getAccountData()
     }
 
     const deleteALL = () => {
@@ -57,7 +87,7 @@ const StackNavigator = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name="Home">
-                {(props) => <HomeScreen data={data} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
+                {(props) => <HomeScreen data={data} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} deleteALL={deleteALL} AddAccount={AddAccount} getAccountData={getAccountData}/>}
             </Stack.Screen>
 
             <Stack.Screen name="AddAccount"
