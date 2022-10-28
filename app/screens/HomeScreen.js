@@ -1,6 +1,5 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView, Pressable, Keyboard } from 'react-native'
 import React, { useLayoutEffect, useEffect, useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
 import {
     AdjustmentsVerticalIcon,
     Bars3Icon,
@@ -20,7 +19,7 @@ import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
 
     const [showAddAcc, setShowAddAcc] = useState(false)
     const [accountName, setAccountName] = useState("")
@@ -107,15 +106,6 @@ const HomeScreen = () => {
         precision: 2,
     })
 
-    const navigation = useNavigation();
-    useLayoutEffect(() => {
-      
-        navigation.setOptions({
-            headerShown: false,
-
-        }); 
-    }, []) 
-
     const setAddAcc = () => {
         setShowAddAcc(true)
     }
@@ -178,12 +168,16 @@ const HomeScreen = () => {
             <SafeAreaView className="bg-[#8cbbf1] pt-5">
                 <View className="shadow-lg shadow-gray-400">
                     {/**Title and Icons*/}
-                    <View className="flex-row pb-3 items-center mx-4 space-x-2">
-                        {/**<Bars3Icon size={35} color="#FFFFFF"/>*/}
-                        <Text className="font-normal text-3xl text-center p-3 flex-1 text-white">
+                    <View className="flex-row pb-3 items-center justify-between mx-4 space-x-2">
+                        <Ripple rippleCentered={true} className="rounded-3xl p-2" onPress={() => navigation.openDrawer()}>
+                            <Bars3Icon size={35} color="#FFFFFF"/>
+                        </Ripple>
+                        <Text className="font-normal text-3xl text-center p-3 text-white">
                             Your Accounts
                         </Text>
-                        {/**<UserIcon size={35} color={"#FFFFFF"}/>*/}
+                        <View className="rounded-3xl p-2">
+                            <Bars3Icon size={35} color="#8cbbf1"/>
+                        </View>
                     </View>
 
                     {/**Search */}
