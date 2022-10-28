@@ -17,12 +17,88 @@ import MoneyJar from '../components/MoneyJar'
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
+import * as SQLite from "expo-sqlite"
+const db = SQLite.openDatabase("AppDB");
 
-const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, deleteALL, AddAccount, getAccountData, data}) => {
+const HomeScreen = () => {
 
     const [showAddAcc, setShowAddAcc] = useState(false)
     const [accountName, setAccountName] = useState("")
     const [accountValue, setAccountValue] = useState("")
+    const [data, setData] = useState([])
+
+    const AddAccount = (name, money) => {
+        // is text empty?
+        if (name === null || name === "") {
+          return false;
+        }
+    
+        db.transaction(
+          (tx) => {
+            tx.executeSql("insert into Accounts (name, money) values (?, ?)", [name, money]);
+          },
+        );
+
+        getAccountData()
+      }; 
+
+    const getAccountData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setData(values)
+                    console.log("get data")
+                }
+            )}            
+        )
+    }
+
+    const AddToAccountValue = (amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Accounts set money = money+? where id=?", [amt, id]);
+            },
+        );
+        getAccountData()
+    }; 
+
+    const SubFromAccountValue = (amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Accounts set money = money-? where id=?", [amt, id]);
+            },
+        );
+        getAccountData()
+    }; 
+
+    const deleteAccount = (id) => {
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Accounts where id = ?", [id])
+            }
+        )
+        getAccountData()
+    }
+
+    const deleteALL = () => {
+
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Accounts")
+            }
+        )
+    }
+
+    useEffect(() => {
+    db.transaction((tx) => {
+        tx.executeSql(
+        "create table if not exists Accounts (id integer primary key not null, name text, money real);"
+        );
+    });
+    }, []);
+    
 
     const dollarMask = createNumberMask({
         prefix: ['$'],
