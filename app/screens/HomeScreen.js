@@ -16,13 +16,20 @@ import {
 import MoneyJar from '../components/MoneyJar'
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
-import MaskInput from 'react-native-mask-input';
+import MaskInput, { createNumberMask } from 'react-native-mask-input';
 
 const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, deleteALL, AddAccount, getAccountData, data}) => {
 
     const [showAddAcc, setShowAddAcc] = useState(false)
     const [accountName, setAccountName] = useState("")
     const [accountValue, setAccountValue] = useState("")
+
+    const dollarMask = createNumberMask({
+        prefix: ['$'],
+        delimiter: ',',
+        separator: '.',
+        precision: 2,
+    })
 
     const navigation = useNavigation();
     useLayoutEffect(() => {
@@ -73,14 +80,14 @@ const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, dele
                                 className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"/>
                             </View>
                             <View className="pt-6 w-1/2">
-                                <MaskInput value={accountValue} placeholder='Starting Ammount' keyboardType='decimal-pad' onChangeText={(masked, unmasked) => {setAccountValue(unmasked) }}
+                                <MaskInput value={accountValue} placeholder='Starting Ammount' keyboardType='number-pad' onChangeText={(masked) => {setAccountValue(masked)}} maxLength={12}
                                 className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"
-                                mask={['$', /\d/, /\d/, /\d/, ",", /\d/, /\d/, /\d/, ",", /\d/, /\d/, /\d/]}>
+                                mask={dollarMask}>
                                 </MaskInput>
                             </View>
                         </View>
                         <View className="items-center pt-6 pb-6">
-                            <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-400" onPress={() => {AddAccount(accountName, parseFloat(accountValue)); unsetAddAcc(); setAccountName(''); setAccountValue('')}}>
+                            <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-400" onPress={() => {AddAccount(accountName, parseFloat(accountValue.substring(1))); unsetAddAcc(); setAccountName(''); setAccountValue('')}}>
                                 <Text className="text-white text-lg">
                                     Done
                                 </Text>

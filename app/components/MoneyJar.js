@@ -9,14 +9,21 @@ import {
     CurrencyDollarIcon
 } from "react-native-heroicons/outline"
 import Ripple from 'react-native-material-ripple'
-import { useNavigation } from '@react-navigation/native'
 import Modal from "react-native-modal";
+import MaskInput, { createNumberMask } from 'react-native-mask-input';
 
 
 const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAccountValue, title, ammount, val, }) => {
 
     const [showModal, setShowModal] = useState(false)
     const [accountValue, setAccountValue] = useState("")
+
+    const dollarMask = createNumberMask({
+        prefix: ['$'],
+        delimiter: ',',
+        separator: '.',
+        precision: 2,
+    })
 
     const setModal = () => {
         setShowModal(true)
@@ -51,15 +58,18 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                         </View>
                         <View>
                             <View className="pt-10 pb-10 items-center">
-                                <TextInput value={accountValue} placeholder='Ammount' keyboardType='decimal-pad' onChangeText={(accountValue) => setAccountValue(accountValue) } className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block w-1/2 p-4 shadow-sm shadow-gray-300"/>
+                                <MaskInput value={accountValue} placeholder='Ammount' keyboardType='number-pad' obfuscationCharacter='' onChangeText={(masked) => {setAccountValue(masked)}} maxLength={12}
+                                    className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] w-1/2 block p-4 shadow-sm shadow-gray-300"
+                                    mask={dollarMask}>
+                                </MaskInput>
                             </View>
                             <View className="items-center p-5 flex-row justify-center">
-                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(accountValue, val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1)), val); setAccountValue("")}}>
                                     <PlusIcon color={"#f0f6fc"}>
 
                                     </PlusIcon>
                                 </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(accountValue, val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1)), val); setAccountValue("")}}>
                                     <MinusIcon color={'#8cbbf1'}>
 
                                     </MinusIcon>
@@ -77,7 +87,7 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                 </Pressable>
             </Modal>
 
-            <Ripple rippleCentered={true} className="px-8 py-5 w-screen bg-white items-center flex-row rounded-2xl shadow-md shadow-gray-300" onPress={() => setShowModal(true)}>
+            <Ripple rippleCentered={true} className="px-8 py-5 w-screen bg-white items-center flex-row rounded-2xl shadow-md shadow-gray-300" onPress={() => setModal()}>
                     <CreditCardIcon color={'#000000'} size={40} className="items-left"/>
                     <View className="flex-col px-4">
                         <Text className="font-light text-lg">
