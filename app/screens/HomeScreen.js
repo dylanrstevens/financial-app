@@ -16,6 +16,7 @@ import {
 import MoneyJar from '../components/MoneyJar'
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
+import MaskInput from 'react-native-mask-input';
 
 const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, deleteALL, AddAccount, getAccountData, data}) => {
 
@@ -45,8 +46,7 @@ const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, dele
         console.log("get initial acc data")
     }, []);
     //getAccountData()
-
-
+    
     return (
         <View className="min-h-screen flex flex-col">
             {/**Modal for add account */}
@@ -70,11 +70,13 @@ const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, dele
                         <View className="items-center">
                             <View className="pt-6 w-1/2">
                                 <TextInput value={accountName} placeholder='Account Name' keyboardType='default' onChangeText={(accountName) => setAccountName(accountName)}
-                                className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"/>
+                                className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"/>
                             </View>
                             <View className="pt-6 w-1/2">
-                                <TextInput value={accountValue} placeholder='Starting Ammount' keyboardType='decimal-pad' onChangeText={(accountValue) => setAccountValue(accountValue) } 
-                                className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"/>
+                                <MaskInput value={accountValue} placeholder='Starting Ammount' keyboardType='decimal-pad' onChangeText={(masked, unmasked) => {setAccountValue(unmasked) }}
+                                className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"
+                                mask={['$', /\d/, /\d/, /\d/, ",", /\d/, /\d/, /\d/, ",", /\d/, /\d/, /\d/]}>
+                                </MaskInput>
                             </View>
                         </View>
                         <View className="items-center pt-6 pb-6">

@@ -46,7 +46,7 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                                 {title}
                             </Text>
                             <Text className="font-normal text-lg text-center text-gray-400 pb-4">
-                                Current: ${ammount}
+                                Current: ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                             </Text>
                         </View>
                         <View>
@@ -54,12 +54,12 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                                 <TextInput value={accountValue} placeholder='Ammount' keyboardType='decimal-pad' onChangeText={(accountValue) => setAccountValue(accountValue) } className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-sm rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block w-1/2 p-4 shadow-sm shadow-gray-300"/>
                             </View>
                             <View className="items-center p-5 flex-row justify-center">
-                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(accountValue, val);}}>
+                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(accountValue, val); setAccountValue("")}}>
                                     <PlusIcon color={"#f0f6fc"}>
 
                                     </PlusIcon>
                                 </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(accountValue, val);}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(accountValue, val); setAccountValue("")}}>
                                     <MinusIcon color={'#8cbbf1'}>
 
                                     </MinusIcon>
@@ -84,7 +84,7 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                                 {title}
                         </Text>
                         <Text className="font-light text-lg">
-                                ${ammount}
+                                ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                         </Text>
                 </View>
             </Ripple>

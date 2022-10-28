@@ -34,6 +34,7 @@ const StackNavigator = () => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setData(values)
+                    console.log("get data")
                 }
             )}            
         )
