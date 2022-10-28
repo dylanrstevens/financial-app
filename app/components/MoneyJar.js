@@ -64,12 +64,12 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                                 </MaskInput>
                             </View>
                             <View className="items-center p-5 flex-row justify-center">
-                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1)), val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
                                     <PlusIcon color={"#f0f6fc"}>
 
                                     </PlusIcon>
                                 </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1)), val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
                                     <MinusIcon color={'#8cbbf1'}>
 
                                     </MinusIcon>

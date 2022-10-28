@@ -87,7 +87,7 @@ const HomeScreen = ({deleteAccount, AddToAccountValue, SubFromAccountValue, dele
                             </View>
                         </View>
                         <View className="items-center pt-6 pb-6">
-                            <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-400" onPress={() => {AddAccount(accountName, parseFloat(accountValue.substring(1))); unsetAddAcc(); setAccountName(''); setAccountValue('')}}>
+                            <Ripple rippleCentered={true} className="bg-[#8cbbf1] w-24 h-10 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-400" onPress={() => {AddAccount(accountName, parseFloat(accountValue.substring(1).replace(/\,/g,""))); unsetAddAcc(); setAccountName(''); setAccountValue('')}}>
                                 <Text className="text-white text-lg">
                                     Done
                                 </Text>
