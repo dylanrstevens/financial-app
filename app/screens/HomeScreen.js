@@ -165,7 +165,7 @@ const HomeScreen = ({navigation}) => {
             </Modal>
 
             {/**Header*/}
-            <SafeAreaView className="bg-[#8cbbf1] pt-5">
+            <SafeAreaView className="bg-[#8cbbf1] pt-5 border-b border-gray-400">
                 <View className="shadow-lg shadow-gray-400">
                     {/**Title and Icons*/}
                     <View className="flex-row pb-3 items-center justify-between mx-4 space-x-2">

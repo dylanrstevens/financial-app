@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import HomeScreen from './screens/HomeScreen';
@@ -18,10 +18,13 @@ const Drawer = createDrawerNavigator();
 const CustomDrawer = (props) => {
 
     return (
-        <DrawerContentScrollView>
-            <View className="">
-                <DrawerItemList {...props}/>
+        <DrawerContentScrollView {...props}>
+            <View className='border-b border-gray-400 mb-4'>
+                <Text className="font-normal text-3xl text-center pb-8 pt-6 text-gray-500">
+                    Finance App
+                </Text>
             </View>
+            <DrawerItemList {...props}/>
         </DrawerContentScrollView>
     )
 }
@@ -52,7 +55,7 @@ const StackNavigator = () => {
                     drawerLabelStyle: {
                         fontSize:16,
                         padding:20
-                    }
+                    },
                     
                 }}
             />
@@ -67,11 +70,11 @@ const StackNavigator = () => {
                         borderRadius:20,
                         borderStyle:'solid',
                         borderWidth:1,
-                        borderColor:'#BBBBBB'
+                        borderColor:'#BBBBBB',
                     },
                     drawerLabelStyle: {
                         fontSize:16,
-                        padding:20
+                        padding:20,
                     },
 
                     
