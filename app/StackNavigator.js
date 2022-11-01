@@ -8,9 +8,7 @@ import {
     CreditCardIcon,
     ClipboardDocumentCheckIcon
 } from "react-native-heroicons/outline"
-import { flex } from 'react-native-wind/dist/styles/flex/flex';
-import { flexDirections } from 'react-native-wind/dist/styles/flex/flex-direction';
-import { borderWidths } from 'react-native-wind/dist/styles/view/border-width';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -18,14 +16,12 @@ const Drawer = createDrawerNavigator();
 const CustomDrawer = (props) => {
 
     return (
+        <View className="h-screen">
         <DrawerContentScrollView {...props}>
-            <View className='border-b border-gray-400 mb-4'>
-                <Text className="font-normal text-3xl text-center pb-8 pt-6 text-gray-500">
-                    Finance App
-                </Text>
-            </View>
+                
             <DrawerItemList {...props}/>
         </DrawerContentScrollView>
+        </View>
     )
 }
 

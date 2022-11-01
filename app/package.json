@@ -23,11 +23,14 @@
     "react-dom": "18.0.0",
     "react-native": "0.69.6",
     "react-native-button-component": "^0.2.28",
+    "react-native-circular-progress-indicator": "^4.4.0",
+    "react-native-gesture-handler": "~2.5.0",
     "react-native-heroicons": "^3.2.0",
     "react-native-mask-input": "^1.2.2",
     "react-native-material-ripple": "^0.9.1",
     "react-native-modal": "^13.0.1",
     "react-native-really-awesome-button": "^2.0.3",
+    "react-native-reanimated": "~2.9.1",
     "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
     "react-native-sqlite-storage": "^6.0.1",
@@ -36,8 +39,7 @@
     "react-native-web": "~0.18.7",
     "react-native-wind": "^1.1.4",
     "tailwindcss-react-native": "^1.7.10",
-    "react-native-gesture-handler": "~2.5.0",
-    "react-native-reanimated": "~2.9.1"
+    "expo-linear-gradient": "~11.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

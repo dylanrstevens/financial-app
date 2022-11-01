@@ -11,6 +11,7 @@ import {
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAccountValue, title, ammount, val, }) => {
@@ -87,13 +88,17 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                 </Pressable>
             </Modal>
 
-            <Ripple rippleCentered={true} className="px-8 py-5 w-screen bg-white items-center flex-row rounded-2xl shadow-md shadow-gray-300" onPress={() => setModal()}>
-                    <CreditCardIcon color={'#000000'} size={40} className="items-left"/>
+            <Ripple rippleCentered={true} className="px-8 py-5 w-screen items-center bg-white flex-row rounded-2xl shadow-lg shadow-gray-200" onPress={() => setModal()}>
+                    
+                    <LinearGradient colors={['#8cbbf1', '#d4e6fb']} className="border p-3 rounded-3xl border-gray-300">
+                        <CreditCardIcon color={'#FFFFFF'} size={30} className="items-left"/>
+                    </LinearGradient>
+                    
                     <View className="flex-col px-4">
-                        <Text className="font-light text-lg">
-                                {title}
+                        <Text className="text-md font-extrabold text-gray-400">
+                                {title.toUpperCase()}
                         </Text>
-                        <Text className="font-light text-lg">
+                        <Text className="font-light text-xl">
                                 ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                         </Text>
                 </View>

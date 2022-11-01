@@ -16,8 +16,11 @@ import MoneyJar from '../components/MoneyJar'
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
+import { LinearGradient } from 'expo-linear-gradient';
+
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
+
 
 const HomeScreen = ({navigation}) => {
 
@@ -165,23 +168,24 @@ const HomeScreen = ({navigation}) => {
             </Modal>
 
             {/**Header*/}
-            <SafeAreaView className="bg-[#8cbbf1] pt-5 border-b border-gray-400">
+            <LinearGradient colors={['#8cbbf1', '#d8f7ee']}>
+            <SafeAreaView className=" pt-5 border-b-2 border-gray-300">
                 <View className="shadow-lg shadow-gray-400">
                     {/**Title and Icons*/}
-                    <View className="flex-row pb-3 items-center justify-between mx-4 space-x-2">
-                        <Ripple rippleCentered={true} className="rounded-3xl p-2" onPress={() => navigation.openDrawer()}>
+                    <View className="flex-row pb-6 items-center justify-between mx-4 space-x-2">
+                        <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => navigation.openDrawer()}>
                             <Bars3Icon size={35} color="#FFFFFF"/>
                         </Ripple>
-                        <Text className="font-normal text-3xl text-center p-3 text-white">
+                        <Text className="font-bold text-3xl text-center p-3 text-white">
                             Your Accounts
                         </Text>
-                        <View className="rounded-3xl p-2">
-                            <Bars3Icon size={35} color="#8cbbf1"/>
+                        <View className="rounded-3xl p-3">
+                            <Bars3Icon size={35} color="#00000000"/>
                         </View>
                     </View>
 
                     {/**Search */}
-                    <View className="flex-row items-center space-x-2 pb-3 mx-4">
+                    <View className="flex-row items-center space-x-2 pb-6 mx-4">
                         <View className="flex-row space-x-2 flex-1 bg-gray-100 p-1.5 rounded-md">
                             <MagnifyingGlassCircleIcon color={"#000000"}/>
                             <TextInput placeholder='Search' keyboardType="default"/>
@@ -190,6 +194,7 @@ const HomeScreen = ({navigation}) => {
                     </View>
                 </View>
             </SafeAreaView>
+            </LinearGradient>
             {/**Body*/}
             <View className="h-2/3">
                 <ScrollView
@@ -199,8 +204,11 @@ const HomeScreen = ({navigation}) => {
                     }}
                 >
                     <View className="items-center">
+                        {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
                         {data.map((accounts) => (
+                            <View className="p-2" key={accounts.id}>
                             <MoneyJar getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.name} ammount={accounts.money} key={accounts.id} val={accounts.id}></MoneyJar>
+                            </View>
                         ))}
                     </View>
                 
@@ -212,7 +220,7 @@ const HomeScreen = ({navigation}) => {
                     <View className="bg-white w-screen items-center justify-center pb-8">
                         <Ripple rippleCentered={true} className="flex-row items-center bg-white px-8 py-2 rounded-3xl shadow-xl shadow-gray-400" onPress={() => setAddAcc()}>
                             <SquaresPlusIcon size={50} color={"#8cbbf1"}/>
-                            <Text className="text-[#8cbbf1] font-medium text-lg px-2">
+                            <Text className="text-[#c0f0e2] font-medium text-lg px-2">
                                 Add Account
                             </Text>
                         </Ripple>
