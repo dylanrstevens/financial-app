@@ -169,8 +169,8 @@ const HomeScreen = ({navigation}) => {
 
             {/**Header*/}
             <LinearGradient colors={['#8cbbf1', '#d8f7ee']}>
-            <SafeAreaView className=" pt-5 border-b-2 border-gray-300">
-                <View className="shadow-lg shadow-gray-400">
+            <SafeAreaView className=" pt-5 border-b border-gray-300">
+                <View className="shadow-lg shadow-gray-300">
                     {/**Title and Icons*/}
                     <View className="flex-row pb-6 items-center justify-between mx-4 space-x-2">
                         <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => navigation.openDrawer()}>
@@ -220,7 +220,7 @@ const HomeScreen = ({navigation}) => {
                     <View className="bg-white w-screen items-center justify-center pb-8">
                         <Ripple rippleCentered={true} className="flex-row items-center bg-white px-8 py-2 rounded-3xl shadow-xl shadow-gray-400" onPress={() => setAddAcc()}>
                             <SquaresPlusIcon size={50} color={"#8cbbf1"}/>
-                            <Text className="text-[#c0f0e2] font-medium text-lg px-2">
+                            <Text className="text-[#8cbbf1] font-medium text-lg px-2">
                                 Add Account
                             </Text>
                         </Ripple>
@@ -228,14 +228,9 @@ const HomeScreen = ({navigation}) => {
                 </View>
             </View>
             
-
-            {/**LITTLE SPACE AT BOTTOM TO GIVE ROOM FOR SWIPE UP BAR */}
-            
-        
         </View>
 
     )
 }
 
-//onPress={() => AddAccount("A")}
 export default HomeScreen
