@@ -9,7 +9,6 @@ import {
     ClipboardDocumentCheckIcon
 } from "react-native-heroicons/outline"
 import { LinearGradient } from 'expo-linear-gradient';
-import AddBudgetScreen1 from './screens/AddBudgetScreen1';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -23,16 +22,6 @@ const CustomDrawer = (props) => {
             <DrawerItemList {...props}/>
         </DrawerContentScrollView>
         </View>
-    )
-}
-
-const BudgetNavigator = () => {
-
-    return (
-        <Stack.Navigator initialRouteName='budgetHome'>
-            <Stack.Screen name="budgetHome" component={BudgetScreen} options={{headerShown:false}}/>
-            <Stack.Screen name="budgetOption1" component={AddBudgetScreen1} options={{headerShown:false}}/>
-        </Stack.Navigator>
     )
 }
 
@@ -68,7 +57,7 @@ const StackNavigator = () => {
             />
             <Drawer.Screen
                 name="Budget"
-                component={BudgetNavigator}
+                component={BudgetScreen}
                 options={{
                     drawerIcon:({color}) => (
                         <ClipboardDocumentCheckIcon color={color} size={35}/>
@@ -88,7 +77,6 @@ const StackNavigator = () => {
                 }}
             />
         </Drawer.Navigator>
-
         
     )
 }
