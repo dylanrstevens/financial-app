@@ -21,10 +21,12 @@ import {
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
 
-const BudgetScreen = ({navigation, data}) => {
+const BudgetScreen = ({navigation}) => {
 
-
+    const [maxBudgetIntervalAmount, setMaxBudgetIntervalAmount] = useState(1400)
     const [netWorth, setNetWorth] = useState([])
+    const [budgetRemaining, setBudgetRemaining] = useState(800)
+    const [data, setData] = useState([])
 
     const getTotalNetWorth = () => {
         db.transaction(
@@ -37,14 +39,25 @@ const BudgetScreen = ({navigation, data}) => {
         )
     }
 
+    const getAccountData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setData(values)
+                }
+            )}            
+        )
+    }
+
     useFocusEffect(
         React.useCallback(() => {
           getTotalNetWorth()
+          getAccountData()
           return () => {
           };
         }, [])
     );
-
     
     
     return (
@@ -83,9 +96,17 @@ const BudgetScreen = ({navigation, data}) => {
                         </Text>
                         <Text className="text-black text-xl font-bold">
                             {netWorth.map((item, index) => (
-                                <Text>{item["total_money"].toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
+                                <Text key={index}>{item["total_money"].toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
                             ))}
                         </Text>
+                        <View>
+                            {data.map((accounts, index) => (
+                                <View className="flex-row items-center p-2" key={accounts.id}>
+                                    <CircularProgress progressValueColor='black' duration={2000} maxValue={accounts.max_amt} value={accounts.remaining_amt} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 18, color:'black'}} radius={80} title='Until next pay'/>
+                                    <Text className="font-bold text-xl px-2">{accounts.name} | {accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
+                                </View>
+                            ))}
+                        </View>
                         
                     </View>
                 

@@ -37,7 +37,7 @@ const HomeScreen = ({navigation}) => {
     
         db.transaction(
           (tx) => {
-            tx.executeSql("insert into Accounts (name, money) values (?, ?)", [name, money]);
+            tx.executeSql("insert into Accounts (name, money, max_amt, remaining_amt) values (?, ?, 300, 300)", [name, money]);
           },
         );
 
@@ -96,7 +96,7 @@ const HomeScreen = ({navigation}) => {
     useEffect(() => {
     db.transaction((tx) => {
         tx.executeSql(
-        "create table if not exists Accounts (id integer primary key not null, name text, money real);"
+        "create table if not exists Accounts (id integer primary key not null, name text, money real, max_amt real, remaining_amt real);"
         );
     });
     }, []);
