@@ -24,12 +24,13 @@ import CheckBox from '@react-native-community/checkbox';
 import BudgetAccount from '../components/BudgetAccount';
 
 import * as SQLite from "expo-sqlite"
+import NetWorth from '../components/NetWorth';
 const db = SQLite.openDatabase("AppDB");
 
 const BudgetScreen = ({navigation}) => {
 
     const [maxBudgetIntervalAmount, setMaxBudgetIntervalAmount] = useState(1400)
-    const [netWorth, setNetWorth] = useState([])
+    const [netWorth, setNetWorth] = useState([{"total_money": 0}])
     const [budgetRemaining, setBudgetRemaining] = useState(800)
     const [budgetData, setBudgetData] = useState([])
     const [accData, setAccData] = useState([])
@@ -41,6 +42,8 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select SUM(money) as total_money from Accounts;", [], (_, { rows: {_array} }) => {
                     const value = _array;
                     setNetWorth(value)
+                    
+                    
                 }
             )}            
         )
@@ -52,6 +55,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts a inner join Budgets b on a.id = b.budget_id", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setBudgetData(values)
+                    console.log(values)
                 }
             )}           
         )
@@ -63,6 +67,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setAccData(values)
+                    console.log(values)
                 }
             )}            
         )
@@ -184,7 +189,7 @@ const BudgetScreen = ({navigation}) => {
                         </Text>
                         <Text className="text-black text-xl font-bold">
                             {netWorth.map((item, index) => (
-                                <Text key={index}>{item["total_money"].toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
+                                <NetWorth key={index} item={item}/>
                             ))}
                         </Text>
                         <View>

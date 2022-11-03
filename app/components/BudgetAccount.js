@@ -53,9 +53,13 @@ const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt,
                 </Pressable>
             </Modal>
             <View className="flex-row items-center p-2">
-            <CircularProgress progressValueColor='black' duration={2000} maxValue={max_amt} value={remaining_amt} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 18, color:'black'}} radius={80} title='Until next pay'/>
+            <CircularProgress progressFormatter={(value) => {
+            'worklet';
+            return value.toFixed(2);}} 
+            progressValueStyle={{fontSize:25}}
+            progressValueColor='black' duration={2000} maxValue={max_amt} value={remaining_amt} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 18, color:'black'}} radius={80} title='Until next pay'/>
                 <View className="flex-col">
-                    <Text className="font-bold text-xl px-2">{name} | {money.toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
+                    <Text className="font-bold text-xl px-2">{name} | ${money.toLocaleString(undefined, {maximumFractionDigits:2})} Total</Text>
                     <View className="items-start p-2">
                         <Ripple className="border p-3 items-center rounded-xl" rippleCentered={true} onPress={() => setShowModal(true)}>
                             <View className="flex-row items-center">

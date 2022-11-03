@@ -56,22 +56,33 @@ const HomeScreen = ({navigation}) => {
         )
     }
 
-    const AddToAccountValue = (amt, id) => {
+    const AddToAccountValue = (a_amt, a_id, b_amt, b_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money+? where id=?", [amt, id]);
+            tx.executeSql("update Accounts set money = money+? where id=?;", [a_amt, a_id]);
+            },
+        );
+        db.transaction(
+            (tx) => {
+                tx.executeSql("update Budgets set remaining_amt = remaining_amt+? where budget_id = ?;", [b_amt, b_id])
             },
         );
         getAccountData()
     }; 
 
-    const SubFromAccountValue = (amt, id) => {
+    const SubFromAccountValue = (a_amt, a_id, b_amt, b_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money-? where id=?", [amt, id]);
+            tx.executeSql("update Accounts set money = money-? where id=?;", [a_amt, a_id]);
+            },
+        );
+        db.transaction(
+            (tx) => {
+                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where budget_id = ?;", [b_amt, b_id])
             },
         );
         getAccountData()
+        console.log(b_id)
     }; 
 
     const deleteAccount = (id) => {
@@ -79,6 +90,11 @@ const HomeScreen = ({navigation}) => {
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts where id = ?", [id])
+            }
+        )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Budgets where budget_id = ?", [id])
             }
         )
         getAccountData()
@@ -96,7 +112,7 @@ const HomeScreen = ({navigation}) => {
     useEffect(() => {
     db.transaction((tx) => {
         tx.executeSql(
-        "create table if not exists Accounts (id integer primary key not null, name text, money real);"
+        "create table if not exists Accounts (id integer primary key not null, name text, money real); create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
         );
     });
     }, []);
