@@ -14,10 +14,14 @@ import {
     MinusIcon,
     PlusCircleIcon,
     SquaresPlusIcon,
+    PlusSmallIcon,
     PlusIcon,
-    UserIcon
+    MinusSmallIcon,
+    UserIcon,
+    BanknotesIcon
 } from "react-native-heroicons/outline"
 import CheckBox from '@react-native-community/checkbox';
+import BudgetAccount from '../components/BudgetAccount';
 
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
@@ -68,7 +72,7 @@ const BudgetScreen = ({navigation}) => {
     const addAccToBudget = (id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("insert or replace into Budgets (budget_id) values (?)", [id]);
+            tx.executeSql("insert or replace into Budgets (budget_id, max_amt, remaining_amt) values (?, 0, 0)", [id]);
             },
         )
         getBudgetData()
@@ -80,6 +84,15 @@ const BudgetScreen = ({navigation}) => {
             tx.executeSql("delete from Budgets where budget_id = (?)", [id]);
             },
         )
+        getBudgetData()
+    }; 
+
+    const AddMaxAmtToBudgetAccount = (m_amt, r_amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Budgets set max_amt = ?, remaining_amt = ? where budget_id=?", [m_amt, r_amt, id]);
+            },
+        );
         getBudgetData()
     }; 
 
@@ -103,7 +116,7 @@ const BudgetScreen = ({navigation}) => {
     
     
     return (
-        <View>
+        <View className="flex-1">
             <Modal 
             isVisible={showAddToBudget}
             onSwipeComplete={() => setShowAddToBudget(false)}
@@ -117,7 +130,7 @@ const BudgetScreen = ({navigation}) => {
                     <View className="bg-white rounded-3xl">
                         <View className="items-center">
                             {accData.map((accounts, index) => (
-                                <View className="items-center">
+                                <View className="items-center" key={accounts.id}>
                                     <View className="flex-row p-2" key={accounts.id}>
                                         <Text className="font-bold text-xl px-2">{accounts.name} | {accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
                                         <Ripple rippleCentered={true} className="rounded-3xl" onPress={() => addAccToBudget(accounts.id)}>
@@ -127,9 +140,6 @@ const BudgetScreen = ({navigation}) => {
                                             <MinusIcon size={35} color="#000000"/>
                                         </Ripple>
                                     </View>
-                                    <TextInput placeholder='Ammount' className="bg-gray-200">
-                                        
-                                    </TextInput>
                                 </View>
                             ))}
                         </View>
@@ -158,7 +168,7 @@ const BudgetScreen = ({navigation}) => {
             </LinearGradient>
 
             {/**Body */}
-            <View className="h-screen">
+            <View className="flex-1">
                 <ScrollView
                     className="bg-white"
                     contentContainerStyle={{
@@ -180,10 +190,9 @@ const BudgetScreen = ({navigation}) => {
                         <View>
                             
                             {budgetData.map((accounts, index) => (
-                                <View className="flex-row items-center p-2" key={accounts.id}>
-                                    <CircularProgress progressValueColor='black' duration={2000} maxValue={300} value={300} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 18, color:'black'}} radius={80} title='Until next pay'/>
-                                    <Text className="font-bold text-xl px-2">{accounts.name} | {accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
-                                </View>
+                                <View key={accounts.budget_id} className="p-2">
+                                    <BudgetAccount val={accounts.budget_id} AddMaxAmmountToBudgetAccount={AddMaxAmtToBudgetAccount} name={accounts.name} money={accounts.money} max_amt={accounts.max_amt} remaining_amt={accounts.remaining_amt}/>
+                                </View> 
                             ))}
                             
                         </View>
