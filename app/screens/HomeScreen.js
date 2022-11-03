@@ -173,7 +173,7 @@ const HomeScreen = ({navigation}) => {
                 <View className="shadow-lg shadow-gray-300">
                     {/**Title and Icons*/}
                     <View className="flex-row pb-6 items-center justify-between mx-4 space-x-2">
-                        <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => navigation.openDrawer()}>
+                        <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => { navigation.openDrawer()}}>
                             <Bars3Icon size={35} color="#FFFFFF"/>
                         </Ripple>
                         <Text className="font-bold text-3xl text-center p-3 text-white">
@@ -227,9 +227,6 @@ const HomeScreen = ({navigation}) => {
                     </View>
                 </View>
             </View>
-            
-
-            {/**LITTLE SPACE AT BOTTOM TO GIVE ROOM FOR SWIPE UP BAR */}
             
         
         </View>
