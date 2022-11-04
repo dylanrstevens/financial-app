@@ -222,7 +222,7 @@ const HomeScreen = ({navigation}) => {
                     <View className="items-center">
                         {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
                         {data.map((accounts) => (
-                            <View className="p-2" key={accounts.id}>
+                            <View className="pt-4 w-11/12" key={accounts.id}>
                             <MoneyJar getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.name} ammount={accounts.money} key={accounts.id} val={accounts.id}></MoneyJar>
                             </View>
                         ))}

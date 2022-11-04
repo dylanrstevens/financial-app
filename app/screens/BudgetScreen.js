@@ -125,30 +125,51 @@ const BudgetScreen = ({navigation}) => {
             <Modal 
             isVisible={showAddToBudget}
             onSwipeComplete={() => setShowAddToBudget(false)}
-            swipeDirection="down"
+            swipeDirection="right"
             backdropOpacity={0.4}
             animationInTiming={300}
             animationOutTiming={300}
             avoidKeyboard={true}
+            animationIn='slideInRight'
+            animationOut='slideOutRight'
             >
-                <Pressable onPress={Keyboard.dismiss} className="flex-1 flex-col justify-end">
-                    <View className="bg-white rounded-3xl">
-                        <View className="items-center">
+                <Pressable onPress={Keyboard.dismiss} className="flex-1 items-start flex-row justify-end pt-8">
+                    
+                    <View className="rounded-3xl bg-white">
+                    <LinearGradient colors={['#e2cbf9', '#b7f4e3']} className="rounded-t-3xl">
+                        <Text className="text-center p-4 font-extrabold text-lg text-white shadow-lg shadow-gray-600">
+                            Edit Accounts In Your Budget
+                        </Text>
+                    </LinearGradient>
+                        <View className="pb-4 pt-4">
                             {accData.map((accounts, index) => (
-                                <View className="items-center" key={accounts.id}>
-                                    <View className="flex-row p-2" key={accounts.id}>
-                                        <Text className="font-bold text-xl px-2">{accounts.name} | {accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
-                                        <Ripple rippleCentered={true} className="rounded-3xl" onPress={() => addAccToBudget(accounts.id)}>
-                                            <PlusIcon size={35} color="#000000"/>
-                                        </Ripple>
-                                        <Ripple rippleCentered={true} className="rounded-3xl" onPress={() => deleteAccFromBudget(accounts.id)}>
-                                            <MinusIcon size={35} color="#000000"/>
-                                        </Ripple>
+                                <View className="" key={accounts.id}>
+                                    <View className="flex-row justify-between p-2" key={accounts.id}>
+                                        <View className="flex-row items-center">
+                                            <Text className="font-extrabold text-gray-400 text-xl">
+                                                {accounts.name}
+                                            </Text>
+                                            <Text className="font-normal text-xl pl-2">
+                                                |
+                                            </Text>
+                                            <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
+                                                ${accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}
+                                            </Text>
+                                        </View>
+                                        <View className="flex-row items-center">
+                                            <Ripple rippleCentered={true} className="rounded-3xl border border-gray-200 bg-[#8cbbf1]" onPress={() => addAccToBudget(accounts.id)}>
+                                                <PlusIcon size={35} color="#f0f6fc"/>
+                                            </Ripple>
+                                            <Ripple rippleCentered={true} className="rounded-3xl border border-gray-200 bg-[#f0f6fc]" onPress={() => deleteAccFromBudget(accounts.id)}>
+                                                <MinusIcon size={35} color="#8cbbf1"/>
+                                            </Ripple>
+                                        </View>
                                     </View>
                                 </View>
                             ))}
                         </View>
                     </View>
+                    
                     
                 </Pressable>
             </Modal>
@@ -164,9 +185,9 @@ const BudgetScreen = ({navigation}) => {
                             <Text className="font-bold text-3xl text-center p-3 text-white">
                                 Budget
                             </Text>
-                            <View className="rounded-3xl p-3">
-                                <Bars3Icon size={35} color="#00000000"/>
-                            </View>
+                            <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => setShowAddToBudget(true)}>
+                                <PlusIcon size={35} color="#FFFFFF"/>
+                            </Ripple>
                         </View>
                     </View>
                 </SafeAreaView>
@@ -180,19 +201,19 @@ const BudgetScreen = ({navigation}) => {
                         paddingBottom: 0,
                     }}
                 >
-                    <View className="items-center">
-                        <Ripple className="border p-3" rippleCentered={true} onPress={() => setShowAddToBudget(true)}>
-                            <Text>Add an Account to Budget</Text>
-                        </Ripple>
-                        <Text className="text-black text-xl font-bold">
-                            Net Worth (Sum of all accounts)
-                        </Text>
-                        <Text className="text-black text-xl font-bold">
-                            {netWorth.map((item, index) => (
-                                <NetWorth key={index} item={item}/>
-                            ))}
-                        </Text>
-                        <View>
+                    <View className="items-center py-4 space-y-5">
+                        <View className="items-center w-11/12 rounded-xl py-4 bg-white shadow-sm shadow-gray-500">
+                            <Text className="font-extrabold text-gray-500 text-xl">
+                                Net Worth (Sum of all accounts)
+                            </Text>
+                            
+                            <Text className="text-black text-xl font-bold">
+                                {netWorth.map((item, index) => (
+                                    <NetWorth key={index} item={item}/>
+                                ))}
+                            </Text>
+                        </View>
+                        <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
                             
                             {budgetData.map((accounts, index) => (
                                 <View key={accounts.budget_id} className="p-2">
