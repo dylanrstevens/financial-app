@@ -53,7 +53,7 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                             <Text className="text-2xl font-extrabold text-gray-400 text-center">
                                 {title}
                             </Text>
-                            <Text className="font-normal text-lg text-center text-gray-400">
+                            <Text className="font-normal text-lg text-center text-[#4B5563]">
                                 Current: ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                             </Text>
                         </View>
@@ -98,7 +98,7 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                         <Text className="text-md font-extrabold text-gray-400">
                                 {title.toUpperCase()}
                         </Text>
-                        <Text className="font-light text-xl">
+                        <Text className="font-normal text-xl text-[#4B5563]">
                                 ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                         </Text>
                 </View>

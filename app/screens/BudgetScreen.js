@@ -55,7 +55,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts a inner join Budgets b on a.id = b.budget_id", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setBudgetData(values)
-                    console.log(values)
+                    //console.log(values)
                 }
             )}           
         )
@@ -67,7 +67,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setAccData(values)
-                    console.log(values)
+                    //console.log(values)
                 }
             )}            
         )
@@ -157,11 +157,11 @@ const BudgetScreen = ({navigation}) => {
                                             </Text>
                                         </View>
                                         <View className="flex-row items-center">
-                                            <Ripple rippleCentered={true} className="rounded-3xl border border-gray-200 bg-[#8cbbf1]" onPress={() => addAccToBudget(accounts.id)}>
-                                                <PlusIcon size={35} color="#f0f6fc"/>
+                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => addAccToBudget(accounts.id)}>
+                                                <PlusIcon size={35} color="#4B5563"/>
                                             </Ripple>
-                                            <Ripple rippleCentered={true} className="rounded-3xl border border-gray-200 bg-[#f0f6fc]" onPress={() => deleteAccFromBudget(accounts.id)}>
-                                                <MinusIcon size={35} color="#8cbbf1"/>
+                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => deleteAccFromBudget(accounts.id)}>
+                                                <MinusIcon size={35} color="#4B5563"/>
                                             </Ripple>
                                         </View>
                                     </View>
