@@ -62,11 +62,6 @@ const HomeScreen = ({navigation}) => {
             tx.executeSql("update Accounts set money = money+? where id=?;", [a_amt, a_id]);
             },
         );
-        db.transaction(
-            (tx) => {
-                tx.executeSql("update Budgets set remaining_amt = remaining_amt+? where budget_id = ?;", [b_amt, b_id])
-            },
-        );
         getAccountData()
     }; 
 
@@ -214,7 +209,7 @@ const HomeScreen = ({navigation}) => {
             {/**Body*/}
             <View className="h-2/3">
                 <ScrollView
-                    className="bg-white"
+                    className="bg-gray-50"
                     contentContainerStyle={{
                         paddingBottom: 0,
                     }}
@@ -233,7 +228,7 @@ const HomeScreen = ({navigation}) => {
             {/**Footer*/}
             <View className="flex-grow">
                 <View className="flex-row flex-grow">
-                    <View className="bg-white w-screen items-center justify-center pb-8">
+                    <View className="bg-gray-50 w-screen items-center justify-center pb-8">
                         <Ripple rippleCentered={true} className="flex-row items-center bg-white px-8 py-2 rounded-3xl shadow-xl shadow-gray-400" onPress={() => setAddAcc()}>
                             <SquaresPlusIcon size={50} color={"#8cbbf1"}/>
                             <Text className="text-[#8cbbf1] font-medium text-lg px-2">

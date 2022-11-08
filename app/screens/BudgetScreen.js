@@ -29,12 +29,13 @@ const db = SQLite.openDatabase("AppDB");
 
 const BudgetScreen = ({navigation}) => {
 
-    const [maxBudgetIntervalAmount, setMaxBudgetIntervalAmount] = useState(1400)
     const [netWorth, setNetWorth] = useState([{"total_money": 0}])
-    const [budgetRemaining, setBudgetRemaining] = useState(800)
     const [budgetData, setBudgetData] = useState([])
     const [accData, setAccData] = useState([])
     const [showAddToBudget, setShowAddToBudget] = useState()
+    const [curMonth, setCurMonth] = useState([])
+    const [curYear, setCurYear] = useState([])
+
 
     const getTotalNetWorth = () => {
         db.transaction(
@@ -101,21 +102,48 @@ const BudgetScreen = ({navigation}) => {
         getBudgetData()
     }; 
 
+    const ResetBudgetToTop = () => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Budgets set remaining_amt = max_amt", []);
+            },
+        );
+        getBudgetData()
+    }; 
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+
+    const getMonth = () => {
+        const d = new Date()
+        setCurMonth([d.getMonth()])
+    }
+
+    const getYear = () => {
+        const d = new Date()
+        setCurYear([d.getFullYear()])
+    }
+
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
             "create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
             );
         });
+        
         }, []);
 
     useFocusEffect(
         React.useCallback(() => {
-          getTotalNetWorth()
-          getBudgetData()
-          getAccData()
-          return () => {
-          };
+            getYear()
+            getMonth()
+            getTotalNetWorth()
+            getBudgetData()
+            getAccData()
+            return () => {
+            };
         }, [])
     );
     
@@ -210,6 +238,21 @@ const BudgetScreen = ({navigation}) => {
                                 ))}
                             </Text>
                         </View>
+                        <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl items-center flex-row justify-center p-3">
+                            
+                            <View>
+                                {curMonth.map((item, index) => (
+                                    <Text key={index} className="font-extrabold text-gray-500 text-xl">{monthNames[item]}</Text>
+                                ))}
+                            </View>
+                            <Text>{' '}</Text>
+                            <View>
+                                {curYear.map((item, index) => (
+                                    <Text key={index} className="font-extrabold text-gray-500 text-xl">{item}</Text>
+                                ))}
+                            </View>
+                            
+                        </View>
                         <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
                             
                             {budgetData.map((accounts, index) => (
@@ -219,6 +262,14 @@ const BudgetScreen = ({navigation}) => {
                             ))}
                             
                         </View>
+                        <View className="items-center w-11/12 rounded-xl py-4 bg-white shadow-sm shadow-gray-500">
+                            <Ripple rippleCentered={true} className="flex-row items-center bg-white px-2 py-2 rounded-3xl shadow-sm shadow-gray-500" onPress={() => ResetBudgetToTop()}>
+                                <Text className="text-gray-500 font-bold text-lg px-2">
+                                    Reset Account Budgets To Max
+                                </Text>
+                            </Ripple>
+                        </View>
+                        
                         
                     </View>
                 
