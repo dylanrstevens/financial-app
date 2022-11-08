@@ -145,12 +145,9 @@ const BudgetScreen = ({navigation}) => {
                             {accData.map((accounts, index) => (
                                 <View className="" key={accounts.id}>
                                     <View className="flex-row justify-between p-2" key={accounts.id}>
-                                        <View className="flex-row items-center">
-                                            <Text className="font-extrabold text-gray-400 text-xl">
+                                        <View className="flex-row  flex-1 items-center">
+                                            <Text className="font-extrabold flex-1 text-gray-400 text-xl">
                                                 {accounts.name}
-                                            </Text>
-                                            <Text className="font-normal text-xl pl-2">
-                                                |
                                             </Text>
                                             <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
                                                 ${accounts.money.toLocaleString(undefined, {maximumFractionDigits:2})}
@@ -216,7 +213,7 @@ const BudgetScreen = ({navigation}) => {
                         <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
                             
                             {budgetData.map((accounts, index) => (
-                                <View key={accounts.budget_id} className="p-2">
+                                <View key={accounts.budget_id} className="px-2 py-3">
                                     <BudgetAccount val={accounts.budget_id} AddMaxAmmountToBudgetAccount={AddMaxAmtToBudgetAccount} name={accounts.name} money={accounts.money} max_amt={accounts.max_amt} remaining_amt={accounts.remaining_amt}/>
                                 </View> 
                             ))}

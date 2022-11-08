@@ -72,19 +72,14 @@ const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt,
             activeStrokeColor={'#b7f4e3'}
             activeStrokeSecondaryColor={'#e2cbf9'}
             />
-                <View className="flex-col px-2">
-                    <View className="flex-row items-center">
+                <View className="flex-col  flex-1 px-2">
+                    <View className=" items-center">
                         <Text className="font-extrabold text-gray-400 text-2xl">
                             {name}
                         </Text>
-                        <Text className="font-normal text-gray-600 text-xl pl-2">
-                            |
-                        </Text>
-                        <Text className="font-bold text-lg pl-2 pr-2 text-gray-600">
-                            ${money.toLocaleString(undefined, {maximumFractionDigits:2})}
-                        </Text>
+                        
                     </View>
-                    <View className="items-start p-2">
+                    <View className="items-center flex-row justify-center p-2">
                         <Ripple className="shadow-sm shadow-gray-300 p-3 items-center rounded-xl bg-[#FFFFFF]" rippleCentered={true} onPress={() => setModal()}>
                             <View className="flex-row items-center">
                                 <BanknotesIcon size={30} color={'#4B5563'}/>
@@ -94,6 +89,9 @@ const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt,
                                 </View>
                             </View>
                         </Ripple>
+                        <Text className="font-bold text-lg pl-2 pr-2 text-gray-600">
+                            ${money.toLocaleString(undefined, {maximumFractionDigits:2})}
+                        </Text>
                     </View>
                 </View>
             </View>
