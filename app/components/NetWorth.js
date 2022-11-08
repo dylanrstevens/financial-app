@@ -8,7 +8,7 @@ const NetWorth = ({item}) => {
             return;
         }
         else {
-            return <Text className="font-extrabold text-gray-500 text-xl">{item["total_money"].toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
+            return <Text className="font-extrabold text-gray-500 text-xl">${item["total_money"].toLocaleString(undefined, {maximumFractionDigits:2})}</Text>
         }
     }
 
