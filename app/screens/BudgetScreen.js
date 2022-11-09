@@ -20,8 +20,8 @@ import {
     UserIcon,
     BanknotesIcon
 } from "react-native-heroicons/outline"
-import CheckBox from '@react-native-community/checkbox';
 import BudgetAccount from '../components/BudgetAccount';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import * as SQLite from "expo-sqlite"
 import NetWorth from '../components/NetWorth';
@@ -33,9 +33,34 @@ const BudgetScreen = ({navigation}) => {
     const [budgetData, setBudgetData] = useState([])
     const [accData, setAccData] = useState([])
     const [showAddToBudget, setShowAddToBudget] = useState()
-    const [curMonth, setCurMonth] = useState([])
-    const [curYear, setCurYear] = useState([])
 
+    const [date, setDate] = useState([])
+    const [nextPay, setNextPay] = useState([])
+    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+    const showDatePicker = () => {
+        setDatePickerVisibility(true);
+    };
+
+    const hideDatePicker = () => {
+        setDatePickerVisibility(false);
+    };
+
+    const handleConfirm = (date) => {
+        //console.log(date);
+        hideDatePicker();
+        insertPayDate(date.toISOString())
+        setNextPay([date])
+    };
+
+    const insertPayDate = (value) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("insert or replace into Paydays (pay_id, next_pay) values (1, ?)", [value]);
+            },
+        )
+        getPayDate()
+    }; 
 
     const getTotalNetWorth = () => {
         db.transaction(
@@ -43,8 +68,6 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select SUM(money) as total_money from Accounts;", [], (_, { rows: {_array} }) => {
                     const value = _array;
                     setNetWorth(value)
-                    
-                    
                 }
             )}            
         )
@@ -108,6 +131,24 @@ const BudgetScreen = ({navigation}) => {
             tx.executeSql("update Budgets set remaining_amt = max_amt", []);
             },
         );
+        console.log("reset budget to top")
+        getBudgetData()
+    };
+
+    const getPayDate = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("Select next_pay from Paydays", [], (_, { rows: {_array} }) => {
+                    if (_array.length > 0) {
+                        //console.log(_array)
+                        const value = _array[0]["next_pay"];
+                        const d = new Date(value)
+                        setNextPay([d])
+                    }
+                    
+                }
+            )},
+        );
         getBudgetData()
     }; 
 
@@ -115,15 +156,20 @@ const BudgetScreen = ({navigation}) => {
         "July", "August", "September", "October", "November", "December"
     ];
 
-
-    const getMonth = () => {
+    const getDate = () => {
         const d = new Date()
-        setCurMonth([d.getMonth()])
+        setDate([d])
     }
 
-    const getYear = () => {
-        const d = new Date()
-        setCurYear([d.getFullYear()])
+    const daysUntilPay = () => {
+        if (date.length > 0 && nextPay.length > 0) {
+            const difference_In_Time = nextPay[0].getTime() - date[0].getTime();
+            const difference_In_Days = difference_In_Time / (1000 * 3600 * 24);
+            return difference_In_Days
+        }
+        else {
+            return 0
+        }
     }
 
     useEffect(() => {
@@ -132,13 +178,17 @@ const BudgetScreen = ({navigation}) => {
             "create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
             );
         });
-        
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Paydays (pay_id integer primary key, next_pay text);"
+            );
+        });
         }, []);
 
     useFocusEffect(
         React.useCallback(() => {
-            getYear()
-            getMonth()
+            getPayDate()
+            getDate()
             getTotalNetWorth()
             getBudgetData()
             getAccData()
@@ -146,8 +196,7 @@ const BudgetScreen = ({navigation}) => {
             };
         }, [])
     );
-    
-    
+
     return (
         <View className="flex-1">
             <Modal 
@@ -182,10 +231,10 @@ const BudgetScreen = ({navigation}) => {
                                             </Text>
                                         </View>
                                         <View className="flex-row items-center">
-                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => addAccToBudget(accounts.id)}>
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => addAccToBudget(accounts.id)}>
                                                 <PlusIcon size={35} color="#4B5563"/>
                                             </Ripple>
-                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => deleteAccFromBudget(accounts.id)}>
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => deleteAccFromBudget(accounts.id)}>
                                                 <MinusIcon size={35} color="#4B5563"/>
                                             </Ripple>
                                         </View>
@@ -198,6 +247,14 @@ const BudgetScreen = ({navigation}) => {
                     
                 </Pressable>
             </Modal>
+            {/**Date Picker Modal */}
+            <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                mode="date"
+                onConfirm={handleConfirm}
+                onCancel={hideDatePicker}
+                display='inline'
+            />
             {/**Header */}
             <LinearGradient colors={['#b7f4e3', '#e2cbf9']}>
                 <SafeAreaView className=" pt-5 border-b-2 border-gray-300">
@@ -238,19 +295,22 @@ const BudgetScreen = ({navigation}) => {
                                 ))}
                             </Text>
                         </View>
-                        <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl items-center flex-row justify-center p-3">
-                            
-                            <View>
-                                {curMonth.map((item, index) => (
-                                    <Text key={index} className="font-extrabold text-gray-500 text-xl">{monthNames[item]}</Text>
-                                ))}
+                        <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl items-center justify-center p-3">
+                            <View className="flex-row">
+                                <View>
+                                    {date.map((item, index) => (
+                                        <Text key={index} className="font-extrabold text-gray-500 text-xl">{monthNames[item.getMonth()]} {item.getDate()}, {item.getFullYear()}</Text>
+                                    ))}
+                                </View>
                             </View>
-                            <Text>{' '}</Text>
-                            <View>
-                                {curYear.map((item, index) => (
-                                    <Text key={index} className="font-extrabold text-gray-500 text-xl">{item}</Text>
-                                ))}
-                            </View>
+                            <Text className="text-gray-500 font-extrabold text-xl">
+                                Next Pay in {Math.ceil(daysUntilPay())} day(s)
+                            </Text>
+                            <Ripple rippleCentered={true} className="flex-row items-center bg-white px-2 py-2 rounded-3xl shadow-sm shadow-gray-500" onPress={() => showDatePicker()}>
+                                <Text className="text-gray-500 font-bold text-lg px-2">
+                                    Choose next pay date
+                                </Text>   
+                            </Ripple>
                             
                         </View>
                         <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
@@ -260,7 +320,7 @@ const BudgetScreen = ({navigation}) => {
                                     <BudgetAccount val={accounts.budget_id} AddMaxAmmountToBudgetAccount={AddMaxAmtToBudgetAccount} name={accounts.name} money={accounts.money} max_amt={accounts.max_amt} remaining_amt={accounts.remaining_amt}/>
                                 </View> 
                             ))}
-                            
+                              
                         </View>
                         <View className="items-center w-11/12 rounded-xl py-4 bg-white shadow-sm shadow-gray-500">
                             <Ripple rippleCentered={true} className="flex-row items-center bg-white px-2 py-2 rounded-3xl shadow-sm shadow-gray-500" onPress={() => ResetBudgetToTop()}>
@@ -270,12 +330,11 @@ const BudgetScreen = ({navigation}) => {
                             </Ripple>
                         </View>
                         
-                        
                     </View>
                 
                 </ScrollView>
             </View>
-
+            
         </View>
     )
 }
