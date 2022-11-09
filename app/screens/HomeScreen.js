@@ -104,13 +104,27 @@ const HomeScreen = ({navigation}) => {
         )
     }
 
+    
     useEffect(() => {
-    db.transaction((tx) => {
-        tx.executeSql(
-        "create table if not exists Accounts (id integer primary key not null, name text, money real); create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
-        );
-    });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Accounts (account_id integer primary key not null, account_name text, account_amt real);"
+            );
+        });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Dates (month_id integer primary key not null, month text);"
+            );
+        });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Budgets (budget_id integer primary key not null, month_id integer, account_id integer, max_amt real, remaining_amt real, FOREIGN KEY(month_id) REFERENCES Dates(month_id), FOREIGN KEY(account_id) REFERENCES Accounts(account_id));"
+            );
+        });
+
+
     }, []);
+
     
 
     const dollarMask = createNumberMask({
