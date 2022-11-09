@@ -49,9 +49,18 @@ const BudgetScreen = ({navigation}) => {
     const handleConfirm = (date) => {
         //console.log(date);
         hideDatePicker();
-
+        insertPayDate(date.toISOString())
         setNextPay([date])
     };
+
+    const insertPayDate = (value) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("insert or replace into Paydays (pay_id, next_pay) values (1, ?)", [value]);
+            },
+        )
+        getPayDate()
+    }; 
 
     const getTotalNetWorth = () => {
         db.transaction(
@@ -59,8 +68,6 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select SUM(money) as total_money from Accounts;", [], (_, { rows: {_array} }) => {
                     const value = _array;
                     setNetWorth(value)
-                    
-                    
                 }
             )}            
         )
@@ -124,6 +131,24 @@ const BudgetScreen = ({navigation}) => {
             tx.executeSql("update Budgets set remaining_amt = max_amt", []);
             },
         );
+        console.log("reset budget to top")
+        getBudgetData()
+    };
+
+    const getPayDate = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("Select next_pay from Paydays", [], (_, { rows: {_array} }) => {
+                    if (_array.length > 0) {
+                        //console.log(_array)
+                        const value = _array[0]["next_pay"];
+                        const d = new Date(value)
+                        setNextPay([d])
+                    }
+                    
+                }
+            )},
+        );
         getBudgetData()
     }; 
 
@@ -140,7 +165,7 @@ const BudgetScreen = ({navigation}) => {
         if (date.length > 0 && nextPay.length > 0) {
             const difference_In_Time = nextPay[0].getTime() - date[0].getTime();
             const difference_In_Days = difference_In_Time / (1000 * 3600 * 24);
-            return Math.ceil(difference_In_Days)
+            return difference_In_Days
         }
         else {
             return 0
@@ -153,10 +178,16 @@ const BudgetScreen = ({navigation}) => {
             "create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
             );
         });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Paydays (pay_id integer primary key, next_pay text);"
+            );
+        });
         }, []);
 
     useFocusEffect(
         React.useCallback(() => {
+            getPayDate()
             getDate()
             getTotalNetWorth()
             getBudgetData()
@@ -200,10 +231,10 @@ const BudgetScreen = ({navigation}) => {
                                             </Text>
                                         </View>
                                         <View className="flex-row items-center">
-                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => addAccToBudget(accounts.id)}>
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => addAccToBudget(accounts.id)}>
                                                 <PlusIcon size={35} color="#4B5563"/>
                                             </Ripple>
-                                            <Ripple rippleCentered={true} className="rounded-xl border border-gray-200 bg-[#f0f6fc]" onPress={() => deleteAccFromBudget(accounts.id)}>
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => deleteAccFromBudget(accounts.id)}>
                                                 <MinusIcon size={35} color="#4B5563"/>
                                             </Ripple>
                                         </View>
@@ -273,7 +304,7 @@ const BudgetScreen = ({navigation}) => {
                                 </View>
                             </View>
                             <Text className="text-gray-500 font-extrabold text-xl">
-                                Next Pay in {daysUntilPay()} day(s)
+                                Next Pay in {Math.ceil(daysUntilPay())} day(s)
                             </Text>
                             <Ripple rippleCentered={true} className="flex-row items-center bg-white px-2 py-2 rounded-3xl shadow-sm shadow-gray-500" onPress={() => showDatePicker()}>
                                 <Text className="text-gray-500 font-bold text-lg px-2">
