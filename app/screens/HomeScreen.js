@@ -9,7 +9,17 @@ import {
     PlusCircleIcon,
     SquaresPlusIcon,
     PlusIcon,
-    UserIcon
+    UserIcon,
+    WalletIcon,
+    TagIcon,
+    HomeIcon,
+    AcademicCapIcon,
+    BanknotesIcon,
+    MusicalNoteIcon,
+    TvIcon,
+    WrenchIcon,
+    ShoppingBagIcon,
+    ArrowUturnLeftIcon
 } from "react-native-heroicons/outline"
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"
 import MoneyJar from '../components/MoneyJar'
@@ -29,8 +39,9 @@ const HomeScreen = ({navigation}) => {
     const [accountValue, setAccountValue] = useState("")
     const [data, setData] = useState([])
     const [dates, setDates] = useState([])
-
     const [searchVal, setSearchVal] = useState("")
+
+
     const AddAccount = (name, money) => {
         // is text empty?
         if (name === null || name === "") {
@@ -39,7 +50,7 @@ const HomeScreen = ({navigation}) => {
     
         db.transaction(
           (tx) => {
-            tx.executeSql("insert into Accounts (account_name, account_amt) values (?, ?)", [name, money]);
+            tx.executeSql("insert into Accounts (account_name, account_amt, icon, color) values (?, ?, 0, 0)", [name, money]);
           },
         );
 
@@ -111,18 +122,14 @@ const HomeScreen = ({navigation}) => {
     const deleteAccount = (id) => {
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Accounts where id = ?", [id])
+                tx.executeSql("delete from Accounts where account_id = ?", [id])
             }
         )
-        db.transaction(
-            (tx) => {
-                tx.executeSql("delete from Budgets where budget_id = ?", [id])
-            }
-        )
+
         getAccountData()
     }
 
-    const deleteALL = () => {
+    const deleteALLAccounts = () => {
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts")
@@ -130,11 +137,29 @@ const HomeScreen = ({navigation}) => {
         )
     }
 
+    const changeColor = (col, id) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("update Accounts set color = ? where account_id = ?", [col, id])
+            }
+        )
+        getAccountData()
+    }
+
+    const changeIcon = (ico, id) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("update Accounts set icon = ? where account_id = ?", [ico, id])
+            }
+        )
+        getAccountData()
+    }
+
     
     useEffect(() => {
         db.transaction((tx) => {
             tx.executeSql(
-            "create table if not exists Accounts (account_id integer primary key not null, account_name text, account_amt real);"
+            "create table if not exists Accounts (account_id integer primary key not null, account_name text, account_amt real, icon integer, color integer);"
             );
         });
         db.transaction((tx) => {
@@ -173,7 +198,7 @@ const HomeScreen = ({navigation}) => {
             return (
                 data.map((accounts) => (
                 <View className="pt-4 w-11/12" key={accounts.account_id}>
-                <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
                 </View>
                 ))
             )
@@ -182,7 +207,7 @@ const HomeScreen = ({navigation}) => {
             return (
                 data.filter(account => account.account_name.includes(searchVal)).map((accounts) => (
                 <View className="pt-4 w-11/12" key={accounts.account_id}>
-                <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
                 </View>
                 ))
             )
@@ -258,12 +283,14 @@ const HomeScreen = ({navigation}) => {
                     </View>
 
                     {/**Search */}
-                    <View className="flex-row items-center space-x-2 pb-6 mx-4">
-                        <View className="flex-row space-x-2 block bg-gray-100 p-1.5 rounded-md">
-                            <MagnifyingGlassCircleIcon color={"#000000"}/>
-                            <TextInput placeholder='Search' value={searchVal} onChangeText={(text) => {setSearchVal(text)}} keyboardType="default" className="w-10/12"/>
+                    <View className="flex-row justify-space items-center pb-6 mx-4">
+                        <View className="flex-row space-x-2 bg-gray-100 p-1.5 rounded-md w-11/12">
+                            <MagnifyingGlassCircleIcon color={"#4B5563"}/>
+                            <TextInput placeholder='Search' value={searchVal} onChangeText={(text) => {setSearchVal(text)}} keyboardType="default" className="flex-grow"/>
                         </View>
-                        <AdjustmentsVerticalIcon color={"#FFFFFF"}/>
+                        <Ripple rippleCentered={true} className="py-1.5 flex-grow items-center" onPress={() => setSearchVal("")}>
+                            <ArrowUturnLeftIcon color={"#FFFFFF"}/>
+                        </Ripple>
                     </View>
                 </View>
             </SafeAreaView>
