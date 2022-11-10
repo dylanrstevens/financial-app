@@ -30,6 +30,7 @@ const HomeScreen = ({navigation}) => {
     const [data, setData] = useState([])
     const [dates, setDates] = useState([])
 
+    const [searchVal, setSearchVal] = useState("")
     const AddAccount = (name, money) => {
         // is text empty?
         if (name === null || name === "") {
@@ -167,6 +168,27 @@ const HomeScreen = ({navigation}) => {
         setShowAddAcc(false)
     }
 
+    const renderCards = () => {
+        if (searchVal == "") {
+            return (
+                data.map((accounts) => (
+                <View className="pt-4 w-11/12" key={accounts.account_id}>
+                <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                </View>
+                ))
+            )
+        }
+        else {
+            return (
+                data.filter(account => account.account_name.includes(searchVal)).map((accounts) => (
+                <View className="pt-4 w-11/12" key={accounts.account_id}>
+                <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                </View>
+                ))
+            )
+        }
+    }
+
     useEffect(() => {
         getAccountData()
         selectMonths()
@@ -237,9 +259,9 @@ const HomeScreen = ({navigation}) => {
 
                     {/**Search */}
                     <View className="flex-row items-center space-x-2 pb-6 mx-4">
-                        <View className="flex-row space-x-2 flex-1 bg-gray-100 p-1.5 rounded-md">
+                        <View className="flex-row space-x-2 block bg-gray-100 p-1.5 rounded-md">
                             <MagnifyingGlassCircleIcon color={"#000000"}/>
-                            <TextInput placeholder='Search' keyboardType="default"/>
+                            <TextInput placeholder='Search' value={searchVal} onChangeText={(text) => {setSearchVal(text)}} keyboardType="default" className="w-10/12"/>
                         </View>
                         <AdjustmentsVerticalIcon color={"#FFFFFF"}/>
                     </View>
@@ -256,11 +278,7 @@ const HomeScreen = ({navigation}) => {
                 >
                     <View className="items-center">
                         {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
-                        {data.map((accounts) => (
-                            <View className="pt-4 w-11/12" key={accounts.account_id}>
-                            <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
-                            </View>
-                        ))}
+                        {renderCards()}
                     </View>
                 
                 </ScrollView>

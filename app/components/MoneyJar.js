@@ -47,9 +47,9 @@ const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccoun
             animationOutTiming={300}
             avoidKeyboard={true}
             >
-                <Pressable onPress={Keyboard.dismiss} className="h-screen justify-center">
+                <Pressable onPress={Keyboard.dismiss} className="flex-1 flex-col justify-end">
                     <View className="bg-white rounded-3xl">
-                        <View className="p-4 shadow-md bg-white rounded-3xl">
+                        <View className="p-4 rounded-t-3xl">
                             <Text className="text-2xl font-extrabold text-gray-400 text-center">
                                 {title}
                             </Text>
@@ -57,30 +57,29 @@ const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccoun
                                 Current: ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                             </Text>
                         </View>
-                        <View>
-                            <View className="pt-10 pb-6 items-center">
+                        <View className="flex-row items-center justify-center border-t pt-5">
+                            <Ripple rippleCentered={true} className="bg-[#8db0e1] p-3 rounded-lg flex-row shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
+                                <PlusIcon color={"#000000"}>
+
+                                </PlusIcon>
+                            </Ripple>
+                            <View className="items-center">
                                 <MaskInput value={accountValue} placeholder='Ammount' keyboardType='number-pad' obfuscationCharacter='' onChangeText={(masked) => {setAccountValue(masked)}} maxLength={12}
-                                    className="bg-gray-50 border border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] w-1/2 block p-4 shadow-sm shadow-gray-300"
+                                    className="bg-gray-50 border border-gray-300 text-center flex-grow text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"
                                     mask={dollarMask}>
                                 </MaskInput>
-                            </View>
-                            <View className="items-center p-5 space-x-5 flex-row justify-center">
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
-                                    <PlusIcon color={"#000000"}>
+                            </View>    
+                            <Ripple rippleCentered={true} className="bg-[#ffffff] p-3 rounded-lg flex-row shadow-sm shadow-gray-300" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, getCurrentMonthID()); setAccountValue("")}}>
+                                <MinusIcon color={'#000000'}>
 
-                                    </PlusIcon>
-                                </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, getCurrentMonthID()); setAccountValue("")}}>
-                                    <MinusIcon color={'#000000'}>
-
-                                    </MinusIcon>
-                                </Ripple>
-                            </View>
+                                </MinusIcon>
+                            </Ripple>
+                           
                         </View>
-                        <View className="items-center pt-6 pb-6">
-                            <Ripple rippleCentered={true} className="bg-[#fcbad5] w-44 h-10 rounded-2xl items-center justify-center shadow-sm shadow-gray-500" onPress={() => {deleteAccount(val);}}>
+                        <View className="items-center pt-10 pb-6">
+                            <Ripple rippleCentered={true} className="bg-[#fcbad5] px-4 h-10 rounded-2xl items-center justify-center shadow-sm shadow-gray-200" onPress={() => {deleteAccount(val);}}>
                                     <Text className="text-[#ee788c] text-sm font-bold">
-                                        Delete This Account
+                                        Delete Account
                                     </Text>
                             </Ripple>
                         </View>
