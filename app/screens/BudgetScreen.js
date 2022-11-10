@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, TextInput, ScrollView, Keyboard, Pressable } from 'react-native'
+import { View, Text, SafeAreaView, TextInput, ScrollView, Keyboard, Pressable, Easing } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import CircularProgress, { ProgressRef } from 'react-native-circular-progress-indicator';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
@@ -25,6 +25,7 @@ import {
 import BudgetAccount from '../components/BudgetAccount';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import PagerView from 'react-native-pager-view';
+import Collapsible from 'react-native-collapsible';
 
 import * as SQLite from "expo-sqlite"
 import NetWorth from '../components/NetWorth';
@@ -37,6 +38,7 @@ const BudgetScreen = ({navigation}) => {
     const [monthPages, setMonthPages] = useState([])
     const [accData, setAccData] = useState([])
     const [budgetData, setBudgetData] = useState([])
+    const [expanded, setExpanded] = useState(true)
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -83,6 +85,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Dates", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setMonthPages(values)
+                    //console.log(values)
                 }
             )}            
         )
@@ -127,7 +130,7 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Budgets b inner join Accounts a on b.account_id = a.account_id", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setBudgetData(values)
-                    console.log(values)
+                    //console.log(values)
                 }
             )}            
         )
@@ -193,6 +196,7 @@ const BudgetScreen = ({navigation}) => {
                     }}
                     key={index}
                     >
+                        {/**Month title */}
                         <View className="py-2">
                             <View className="items-center">
                                 <View className="w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
@@ -206,6 +210,21 @@ const BudgetScreen = ({navigation}) => {
                                 </View>
                             </View>
                         </View>
+
+                        {/**Accounts collapsable */}
+                        <View className="py-2">
+                            <View className="items-center">
+                                <Ripple rippleCentered={true} className="items-center rounded-3xl py-2 bg-white shadow-sm shadow-gray-500" onPress={() => setExpanded(!expanded)}>
+                                    <View className="flex-row items-center justify-between px-4">
+                                        <Text className="font-extrabold text-gray-500 text-md">
+                                            Show/Hide Accounts
+                                        </Text>
+                                    </View>
+                                </Ripple>
+                            </View>
+                        </View>
+
+                        <Collapsible collapsed={expanded} duration={500} className="" easing={Easing.cubic}>
                         <View>
                             {accData.map((accounts, index) => (
                                 <View className="flex-row justify-center" key={accounts.account_id}>
@@ -230,6 +249,9 @@ const BudgetScreen = ({navigation}) => {
                                 </View>
                             ))}
                         </View>
+                        </Collapsible>
+
+                        {/**Budget Accounts */}
                         <View className="items-center">
                             <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
                                 

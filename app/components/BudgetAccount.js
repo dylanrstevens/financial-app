@@ -46,10 +46,10 @@ const BudgetAccount = ({AddMaxAmtToBudgetAccount, val, name, money, max_amt, rem
                 <Pressable onPress={Keyboard.dismiss} className="h-screen justify-center">
                     <View className="bg-white rounded-3xl items-center">    
                         <Text className="font-bold text-2xl p-5 text-[#4B5563]">
-                            {name}  |  ${money}
+                            {name}  |  ${money.toLocaleString(undefined, {maximumFractionDigits:2})}
                         </Text>
                         <Text className="text-center text-lg font-semibold pb-5 text-[#4B5563]">
-                            How much would you like to budget yourself from this account each paycheque?
+                            How much would you like to budget yourself from this account each month?
                         </Text>
                         <MaskInput value={ammountRemaining} placeholder='Max Allowed' keyboardType='number-pad' onChangeText={(masked) => {setAmmountRemaining(masked)}} maxLength={12}
                             className="bg-gray-50 border w-1/2 border-gray-300 text-center text-gray-900 text-md rounded-lg focus:ring-[#8cbbf1] focus:border-[#8cbbf1] block p-4 shadow-sm shadow-gray-300"

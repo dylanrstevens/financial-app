@@ -28,6 +28,7 @@ import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import { LinearGradient } from 'expo-linear-gradient';
 
+
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
 
@@ -63,7 +64,7 @@ const HomeScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setData(values)
-                    console.log("get data")
+                    //console.log("get data")
                     //console.log(values)
                 }
             )}            
@@ -101,10 +102,11 @@ const HomeScreen = ({navigation}) => {
         const thisMonth = new Date()
         for (let iter in dates) {
             const d = new Date(dates[iter].month)
-            if (d.getFullYear() == thisMonth.getFullYear() && d.getDate() == thisMonth.getDate()) {
+            if (d.getFullYear() == thisMonth.getFullYear() && d.getMonth() == thisMonth.getMonth()) {
                 return dates[iter].month_id
             }
         }
+        console.log("failed to get proper month")
         return 0;
     }
 
@@ -114,6 +116,7 @@ const HomeScreen = ({navigation}) => {
                 tx.executeSql("select * from Dates", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setDates(values)
+                    //console.log(values)
                 }
             )}            
         )
@@ -217,7 +220,7 @@ const HomeScreen = ({navigation}) => {
     useEffect(() => {
         getAccountData()
         selectMonths()
-        console.log("get initial acc data")
+        //console.log("get initial acc data")
     }, []);
     //getAccountData()
     

@@ -30,7 +30,7 @@ const StackNavigator = () => {
     return (
         <Drawer.Navigator useLegacyImplementation initialRouteName='Your Accounts' screenOptions={
             {
-                headerShown:false
+                headerShown:false,
             }
         }
         drawerContent={(props) => <CustomDrawer {...props}/>}
@@ -52,7 +52,7 @@ const StackNavigator = () => {
                         fontSize:16,
                         padding:20
                     },
-                    
+                    lazy:false
                 }}
             />
             <Drawer.Screen
@@ -72,7 +72,7 @@ const StackNavigator = () => {
                         fontSize:16,
                         padding:20,
                     },
-
+                    lazy:false
                     
                 }}
             />
