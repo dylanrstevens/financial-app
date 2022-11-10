@@ -145,11 +145,109 @@ const BudgetScreen = ({navigation}) => {
         getBudgetData()
     }; 
 
+    const renderBudgetAccounts = (page) => {
+        const vals = []
+        const subdata = budgetData.filter(acc => acc.month_id == page.month_id)
+        for (let iter in subdata) {
+            const account = subdata[iter]
+            vals.push(
+                <View key={account.budget_id} className="px-2 py-3">
+                    <BudgetAccount AddMaxAmtToBudgetAccount={AddMaxAmtToBudgetAccount} val={account.budget_id} name={account.account_name} money={account.account_amt} max_amt={account.max_amt} remaining_amt={account.remaining_amt}/>
+                </View>
+            )
+        }
+        return (vals)
+    }
+
+    const renderAccounts = (page) => {
+        const vals = []
+        for (let iter in accData) {
+            const accounts = accData[iter]
+            vals.push(
+                <View className="flex-row justify-center" key={accounts.account_id}>
+                    <View className="p-2 flex-row items-center">
+                        <View className="flex-row">
+                            <Text className="font-extrabold text-gray-400 text-xl">
+                                {accounts.account_name}
+                            </Text>
+                            <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
+                                ${accounts.account_amt.toLocaleString(undefined, {maximumFractionDigits:2})}
+                            </Text>
+                        </View>
+                        <View className="flex-row">
+                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => addAccToBudget(page.month_id, accounts.account_id)}>
+                                <PlusIcon size={35} color="#4B5563"/>
+                            </Ripple>
+                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => deleteAccFromBudget(page.month_id, accounts.account_id)}>
+                                <MinusIcon size={35} color="#4B5563"/>
+                            </Ripple>
+                        </View>
+                    </View>
+                </View>
+            )
+        }
+        return (vals)
+    }
+
+    const renderPages = () => {
+        const pages = []
+        for (let iter in monthPages) {
+            const page = monthPages[iter]
+            pages.push(
+                <ScrollView
+                className="bg-white"
+                contentContainerStyle={{
+                    paddingBottom: 0,
+                }}
+                key={iter}
+                >
+                    {/**Month title */}
+                    <View className="py-2">
+                        <View className="items-center">
+                            <View className="w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
+                                <View className="flex-row items-center justify-between px-4">
+                                    <ArrowLeftIcon color={'#000000'} size={20}></ArrowLeftIcon>
+                                    <Text className="font-extrabold text-gray-500 text-xl">
+                                        {monthNames[new Date(page.month).getMonth()]} {new Date(page.month).getFullYear()}
+                                    </Text>
+                                    <ArrowRightIcon color={'#000000'} size={20}></ArrowRightIcon>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+
+                    {/**Accounts collapsable */}
+                    <View className="py-2">
+                        <View className="items-center">
+                            <Ripple rippleCentered={true} className="items-center rounded-3xl py-2 bg-white shadow-sm shadow-gray-500" onPress={() => setExpanded(!expanded)}>
+                                <View className="flex-row items-center justify-between px-4">
+                                    <Text className="font-extrabold text-gray-500 text-md">
+                                        Show/Hide Accounts
+                                    </Text>
+                                </View>
+                            </Ripple>
+                        </View>
+                    </View>
+
+                    <Collapsible collapsed={expanded} duration={500} className="" easing={Easing.cubic}>
+                    <View>
+                        {renderAccounts(page)}
+                    </View>
+                    </Collapsible>
+
+                    {/**Budget Accounts */}
+                    <View className="items-center">
+                        <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
+                            {renderBudgetAccounts(page)}
+                        </View>
+                    </View>
+                </ScrollView>
+            )
+        }
+        return (pages)
+    }
 
 
-    useEffect(() => {
-        
-    }, []);
 
     useFocusEffect(
         React.useCallback(() => {
@@ -188,82 +286,7 @@ const BudgetScreen = ({navigation}) => {
 
             {/**BODY PAGES */}
             <PagerView className="flex-1" initialPage={0}>
-                {monthPages.map((page, index) => (
-                    <ScrollView
-                    className="bg-white"
-                    contentContainerStyle={{
-                        paddingBottom: 0,
-                    }}
-                    key={index}
-                    >
-                        {/**Month title */}
-                        <View className="py-2">
-                            <View className="items-center">
-                                <View className="w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
-                                    <View className="flex-row items-center justify-between px-4">
-                                        <ArrowLeftIcon color={'#000000'} size={20}></ArrowLeftIcon>
-                                        <Text className="font-extrabold text-gray-500 text-xl">
-                                            {monthNames[new Date(page.month).getMonth()]} {new Date(page.month).getFullYear()}
-                                        </Text>
-                                        <ArrowRightIcon color={'#000000'} size={20}></ArrowRightIcon>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-
-                        {/**Accounts collapsable */}
-                        <View className="py-2">
-                            <View className="items-center">
-                                <Ripple rippleCentered={true} className="items-center rounded-3xl py-2 bg-white shadow-sm shadow-gray-500" onPress={() => setExpanded(!expanded)}>
-                                    <View className="flex-row items-center justify-between px-4">
-                                        <Text className="font-extrabold text-gray-500 text-md">
-                                            Show/Hide Accounts
-                                        </Text>
-                                    </View>
-                                </Ripple>
-                            </View>
-                        </View>
-
-                        <Collapsible collapsed={expanded} duration={500} className="" easing={Easing.cubic}>
-                        <View>
-                            {accData.map((accounts, index) => (
-                                <View className="flex-row justify-center" key={accounts.account_id}>
-                                    <View className="p-2 flex-row items-center">
-                                        <View className="flex-row">
-                                            <Text className="font-extrabold text-gray-400 text-xl">
-                                                {accounts.account_name}
-                                            </Text>
-                                            <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
-                                                ${accounts.account_amt.toLocaleString(undefined, {maximumFractionDigits:2})}
-                                            </Text>
-                                        </View>
-                                        <View className="flex-row">
-                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => addAccToBudget(page.month_id, accounts.account_id)}>
-                                                <PlusIcon size={35} color="#4B5563"/>
-                                            </Ripple>
-                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => deleteAccFromBudget(page.month_id, accounts.account_id)}>
-                                                <MinusIcon size={35} color="#4B5563"/>
-                                            </Ripple>
-                                        </View>
-                                    </View>
-                                </View>
-                            ))}
-                        </View>
-                        </Collapsible>
-
-                        {/**Budget Accounts */}
-                        <View className="items-center">
-                            <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
-                                
-                                {budgetData.filter(acc => acc.month_id == page.month_id).map((account, index) => (
-                                    <View key={account.budget_id} className="px-2 py-3">
-                                        <BudgetAccount AddMaxAmtToBudgetAccount={AddMaxAmtToBudgetAccount} val={account.budget_id} name={account.account_name} money={account.account_amt} max_amt={account.max_amt} remaining_amt={account.remaining_amt}/>
-                                    </View>
-                                    ))}
-                            </View>
-                        </View>
-                    </ScrollView>
-                ))}
+                {renderPages()}
             </PagerView>
         </View>
     )

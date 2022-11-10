@@ -197,22 +197,32 @@ const HomeScreen = ({navigation}) => {
     }
 
     const renderCardsViaSearch = () => {
+        const cards = []
         if (searchVal == "") {
+            for (let iter in data) {
+                const accounts = data[iter]
+                cards.push(
+                    <View className="pt-4 w-11/12" key={accounts.account_id}>
+                    <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                    </View>
+                )
+            }
             return (
-                data.map((accounts) => (
-                <View className="pt-4 w-11/12" key={accounts.account_id}>
-                <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
-                </View>
-                ))
+                cards
             )
         }
         else {
+            const subdata = data.filter(account => account.account_name.includes(searchVal))
+            for (let iter in subdata) {
+                const accounts = subdata[iter]
+                cards.push(
+                    <View className="pt-4 w-11/12" key={accounts.account_id}>
+                    <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                    </View>
+                )
+            }
             return (
-                data.filter(account => account.account_name.includes(searchVal)).map((accounts) => (
-                <View className="pt-4 w-11/12" key={accounts.account_id}>
-                <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
-                </View>
-                ))
+                cards
             )
         }
     }
