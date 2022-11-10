@@ -69,7 +69,7 @@ const HomeScreen = ({navigation}) => {
         getAccountData()
     }; 
 
-    const SubFromAccountValue = (a_amt, a_id, b_amt, b_id) => {
+    const SubFromAccountValue = (a_amt, a_id, b_amt, b_id, m_id) => {
         db.transaction(
             (tx) => {
             tx.executeSql("update Accounts set account_amt = account_amt-? where account_id=?;", [a_amt, a_id]);
@@ -77,7 +77,7 @@ const HomeScreen = ({navigation}) => {
         );
         db.transaction(
             (tx) => {
-                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where month_id = ?;", [b_amt, b_id], {}, (_, error) => {
+                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where account_id = ? and month_id = ?;", [b_amt, b_id, m_id], {}, (_, error) => {
                     console.log(error)
                 })
             },

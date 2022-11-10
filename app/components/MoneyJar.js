@@ -70,7 +70,7 @@ const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccoun
 
                                     </PlusIcon>
                                 </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), getCurrentMonthID()); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, getCurrentMonthID()); setAccountValue("")}}>
                                     <MinusIcon color={'#000000'}>
 
                                     </MinusIcon>
