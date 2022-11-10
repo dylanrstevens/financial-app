@@ -168,7 +168,7 @@ const HomeScreen = ({navigation}) => {
         setShowAddAcc(false)
     }
 
-    const renderCards = () => {
+    const renderCardsViaSearch = () => {
         if (searchVal == "") {
             return (
                 data.map((accounts) => (
@@ -278,7 +278,7 @@ const HomeScreen = ({navigation}) => {
                 >
                     <View className="items-center">
                         {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
-                        {renderCards()}
+                        {renderCardsViaSearch()}
                     </View>
                 
                 </ScrollView>

@@ -49,7 +49,7 @@ const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccoun
             >
                 <Pressable onPress={Keyboard.dismiss} className="flex-1 flex-col justify-end">
                     <View className="bg-white rounded-3xl">
-                        <View className="p-4 rounded-t-3xl">
+                        <View className="p-4 rounded-3xl bg-white shadow-md shadow-gray-300">
                             <Text className="text-2xl font-extrabold text-gray-400 text-center">
                                 {title}
                             </Text>
@@ -57,8 +57,8 @@ const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccoun
                                 Current: ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
                             </Text>
                         </View>
-                        <View className="flex-row items-center justify-center border-t pt-5">
-                            <Ripple rippleCentered={true} className="bg-[#8db0e1] p-3 rounded-lg flex-row shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
+                        <View className="flex-row items-center justify-center pt-5">
+                            <Ripple rippleCentered={true} className="bg-[#ffffff] p-3 rounded-lg flex-row shadow-sm shadow-gray-300" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
                                 <PlusIcon color={"#000000"}>
 
                                 </PlusIcon>
