@@ -11,7 +11,7 @@ import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
 
 
-const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt, remaining_amt}) => {
+const BudgetAccount = ({AddMaxAmtToBudgetAccount, val, name, money, max_amt, remaining_amt}) => {
 
     const [showModal, setShowModal] = useState(false)
     const [ammountRemaining, setAmmountRemaining] = useState("")
@@ -33,6 +33,7 @@ const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt,
 
     return (
         <View>
+            
             <Modal 
             isVisible={showModal}
             onSwipeComplete={() => unsetModal()}
@@ -55,19 +56,20 @@ const BudgetAccount = ({AddMaxAmmountToBudgetAccount, val, name, money, max_amt,
                             mask={dollarMask}>
                         </MaskInput>
                         <View className="pt-4 pb-6">
-                            <Ripple className="border py-3 px-5 items-center rounded-xl" rippleCentered={true} onPress={() => {const amt = parseFloat(ammountRemaining.substring(1).replace(/\,/g,"")); AddMaxAmmountToBudgetAccount(amt, amt, val); setAmmountRemaining("")}}>
+                            <Ripple className="border py-3 px-5 items-center rounded-xl" rippleCentered={true} onPress={() => {const amt = parseFloat(ammountRemaining.substring(1).replace(/\,/g,"")); AddMaxAmtToBudgetAccount(amt, amt, val); setAmmountRemaining("")}}>
                                 <Text>Set</Text>
                             </Ripple>
                         </View>
                     </View>
                 </Pressable>
             </Modal>
+            
             <View className="flex-row items-center p-2">
             <CircularProgress progressFormatter={(value) => {
             'worklet';
             return value.toFixed(2);}} 
-            progressValueStyle={{fontSize:20}}
-            progressValueColor='#4B5563' duration={2000} maxValue={max_amt} value={remaining_amt} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 14, color:'#4B5563'}} radius={65} title='Until next pay'
+            progressValueStyle={{fontSize:24}}
+            progressValueColor='#4B5563' duration={2000} maxValue={max_amt} value={remaining_amt} valuePrefix='$' titleStyle={{fontWeight:'bold', fontSize: 14, color:'#4B5563'}} radius={72} title='Left this month'
             
             activeStrokeColor={'#b7f4e3'}
             activeStrokeSecondaryColor={'#e2cbf9'}

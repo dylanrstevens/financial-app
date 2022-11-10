@@ -14,7 +14,7 @@ import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAccountValue, title, ammount, val, }) => {
+const MoneyJar = ({getCurrentMonthID, getAccountData, deleteAccount, AddToAccountValue, SubFromAccountValue, title, ammount, val, }) => {
 
     const [showModal, setShowModal] = useState(false)
     const [accountValue, setAccountValue] = useState("")
@@ -65,12 +65,12 @@ const MoneyJar = ({getAccountData, deleteAccount, AddToAccountValue, SubFromAcco
                                 </MaskInput>
                             </View>
                             <View className="items-center p-5 space-x-5 flex-row justify-center">
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {AddToAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
                                     <PlusIcon color={"#000000"}>
 
                                     </PlusIcon>
                                 </Ripple>
-                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), val); setAccountValue("")}}>
+                                <Ripple rippleCentered={true} className="bg-[#f0f6fc] border border-gray-300 p-4 rounded-2xl flex-row items-center justify-center shadow-sm shadow-gray-200" onPress={() => {SubFromAccountValue(parseFloat(accountValue.substring(1).replace(/\,/g,"")), val, parseFloat(accountValue.substring(1).replace(/\,/g,"")), getCurrentMonthID()); setAccountValue("")}}>
                                     <MinusIcon color={'#000000'}>
 
                                     </MinusIcon>

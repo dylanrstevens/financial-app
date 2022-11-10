@@ -28,6 +28,7 @@ const HomeScreen = ({navigation}) => {
     const [accountName, setAccountName] = useState("")
     const [accountValue, setAccountValue] = useState("")
     const [data, setData] = useState([])
+    const [dates, setDates] = useState([])
 
     const AddAccount = (name, money) => {
         // is text empty?
@@ -37,7 +38,7 @@ const HomeScreen = ({navigation}) => {
     
         db.transaction(
           (tx) => {
-            tx.executeSql("insert into Accounts (name, money) values (?, ?)", [name, money]);
+            tx.executeSql("insert into Accounts (account_name, account_amt) values (?, ?)", [name, money]);
           },
         );
 
@@ -51,6 +52,7 @@ const HomeScreen = ({navigation}) => {
                     const values = _array;
                     setData(values)
                     console.log("get data")
+                    //console.log(values)
                 }
             )}            
         )
@@ -59,7 +61,9 @@ const HomeScreen = ({navigation}) => {
     const AddToAccountValue = (a_amt, a_id, b_amt, b_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money+? where id=?;", [a_amt, a_id]);
+            tx.executeSql("update Accounts set account_amt = account_amt+? where account_id=?;", [a_amt, a_id], {}, (_, error) => {
+                console.log(error)
+            });
             },
         );
         getAccountData()
@@ -68,20 +72,42 @@ const HomeScreen = ({navigation}) => {
     const SubFromAccountValue = (a_amt, a_id, b_amt, b_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money-? where id=?;", [a_amt, a_id]);
+            tx.executeSql("update Accounts set account_amt = account_amt-? where account_id=?;", [a_amt, a_id]);
             },
         );
         db.transaction(
             (tx) => {
-                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where budget_id = ?;", [b_amt, b_id])
+                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where month_id = ?;", [b_amt, b_id], {}, (_, error) => {
+                    console.log(error)
+                })
             },
         );
         getAccountData()
-        console.log(b_id)
-    }; 
+    };
+
+    const getCurrentMonthId = () => {
+        const thisMonth = new Date()
+        for (let iter in dates) {
+            const d = new Date(dates[iter].month)
+            if (d.getFullYear() == thisMonth.getFullYear() && d.getDate() == thisMonth.getDate()) {
+                return dates[iter].month_id
+            }
+        }
+        return 0;
+    }
+
+    const selectMonths = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Dates", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setDates(values)
+                }
+            )}            
+        )
+    }
 
     const deleteAccount = (id) => {
-
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts where id = ?", [id])
@@ -96,7 +122,6 @@ const HomeScreen = ({navigation}) => {
     }
 
     const deleteALL = () => {
-
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts")
@@ -118,7 +143,7 @@ const HomeScreen = ({navigation}) => {
         });
         db.transaction((tx) => {
             tx.executeSql(
-            "create table if not exists Budgets (budget_id integer primary key not null, month_id integer, account_id integer, max_amt real, remaining_amt real, FOREIGN KEY(month_id) REFERENCES Dates(month_id), FOREIGN KEY(account_id) REFERENCES Accounts(account_id));"
+            "create table if not exists Budgets (budget_id integer primary key not null, month_id integer, account_id integer, max_amt real, remaining_amt real, FOREIGN KEY(month_id) REFERENCES Dates(month_id), FOREIGN KEY(account_id) REFERENCES Accounts(account_id), UNIQUE(month_id, account_id));"
             );
         });
 
@@ -144,6 +169,7 @@ const HomeScreen = ({navigation}) => {
 
     useEffect(() => {
         getAccountData()
+        selectMonths()
         console.log("get initial acc data")
     }, []);
     //getAccountData()
@@ -231,8 +257,8 @@ const HomeScreen = ({navigation}) => {
                     <View className="items-center">
                         {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
                         {data.map((accounts) => (
-                            <View className="pt-4 w-11/12" key={accounts.id}>
-                            <MoneyJar getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.name} ammount={accounts.money} key={accounts.id} val={accounts.id}></MoneyJar>
+                            <View className="pt-4 w-11/12" key={accounts.account_id}>
+                            <MoneyJar getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
                             </View>
                         ))}
                     </View>

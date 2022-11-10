@@ -18,7 +18,9 @@ import {
     PlusIcon,
     MinusSmallIcon,
     UserIcon,
-    BanknotesIcon
+    BanknotesIcon,
+    ArrowLeftIcon,
+    ArrowRightIcon
 } from "react-native-heroicons/outline"
 import BudgetAccount from '../components/BudgetAccount';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -33,6 +35,8 @@ const BudgetScreen = ({navigation}) => {
 
     const [date, setDate] = useState([])
     const [monthPages, setMonthPages] = useState([])
+    const [accData, setAccData] = useState([])
+    const [budgetData, setBudgetData] = useState([])
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -84,6 +88,61 @@ const BudgetScreen = ({navigation}) => {
         )
     }
 
+    const getAccData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setAccData(values)
+                }
+            )}            
+        )
+    }
+
+    const addAccToBudget = (m_id, acc_id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("insert into Budgets (month_id, account_id, max_amt, remaining_amt) values (?, ?, 0, 0)", [m_id, acc_id], {},  (_, error) => {
+                console.log(error)
+            });
+            }, 
+        )
+        getBudgetData()
+    };
+
+    const deleteAccFromBudget = (m_id, acc_id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("delete from Budgets where month_id = ? and account_id = ?", [m_id, acc_id], {},  (_, error) => {
+                console.log(error)
+            });
+            },
+        )
+        getBudgetData()
+    }; 
+
+    const getBudgetData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Budgets b inner join Accounts a on b.account_id = a.account_id", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setBudgetData(values)
+                    console.log(values)
+                }
+            )}            
+        )
+    }
+
+    const AddMaxAmtToBudgetAccount = (m_amt, r_amt, id) => {
+        db.transaction(
+            (tx) => {
+            tx.executeSql("update Budgets set max_amt = ?, remaining_amt = ? where budget_id=?", [m_amt, r_amt, id]);
+            },
+        );
+        getBudgetData()
+    }; 
+
+
 
     useEffect(() => {
         
@@ -95,6 +154,8 @@ const BudgetScreen = ({navigation}) => {
             getDate()
             initializeMonthInserts()
             selectMonths()
+            getAccData()
+            getBudgetData()
             return () => {
             };
         }, [])
@@ -132,15 +193,53 @@ const BudgetScreen = ({navigation}) => {
                     }}
                     key={index}
                     >
-                    <View className="py-2">
-                        <View className="items-center">
-                            <View className="items-center w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
-                                <Text className="font-extrabold text-gray-500 text-xl">
-                                    {monthNames[new Date(page.month).getMonth()]} {new Date(page.month).getFullYear()}
-                                </Text>
+                        <View className="py-2">
+                            <View className="items-center">
+                                <View className="w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
+                                    <View className="flex-row items-center justify-between px-4">
+                                        <ArrowLeftIcon color={'#000000'} size={20}></ArrowLeftIcon>
+                                        <Text className="font-extrabold text-gray-500 text-xl">
+                                            {monthNames[new Date(page.month).getMonth()]} {new Date(page.month).getFullYear()}
+                                        </Text>
+                                        <ArrowRightIcon color={'#000000'} size={20}></ArrowRightIcon>
+                                    </View>
+                                </View>
                             </View>
                         </View>
-                    </View>
+                        <View>
+                            {accData.map((accounts, index) => (
+                                <View className="flex-row justify-center" key={accounts.account_id}>
+                                    <View className="p-2 flex-row items-center">
+                                        <View className="flex-row">
+                                            <Text className="font-extrabold text-gray-400 text-xl">
+                                                {accounts.account_name}
+                                            </Text>
+                                            <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
+                                                ${accounts.account_amt.toLocaleString(undefined, {maximumFractionDigits:2})}
+                                            </Text>
+                                        </View>
+                                        <View className="flex-row">
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => addAccToBudget(page.month_id, accounts.account_id)}>
+                                                <PlusIcon size={35} color="#4B5563"/>
+                                            </Ripple>
+                                            <Ripple rippleCentered={true} className="rounded-xl shadow-sm shadow-gray-400 bg-[#FFFFFF]" onPress={() => deleteAccFromBudget(page.month_id, accounts.account_id)}>
+                                                <MinusIcon size={35} color="#4B5563"/>
+                                            </Ripple>
+                                        </View>
+                                    </View>
+                                </View>
+                            ))}
+                        </View>
+                        <View className="items-center">
+                            <View className="bg-white shadow-sm shadow-gray-500 w-11/12 rounded-xl">
+                                
+                                {budgetData.filter(acc => acc.month_id == page.month_id).map((account, index) => (
+                                    <View key={account.budget_id} className="px-2 py-3">
+                                        <BudgetAccount AddMaxAmtToBudgetAccount={AddMaxAmtToBudgetAccount} val={account.budget_id} name={account.account_name} money={account.account_amt} max_amt={account.max_amt} remaining_amt={account.remaining_amt}/>
+                                    </View>
+                                    ))}
+                            </View>
+                        </View>
                     </ScrollView>
                 ))}
             </PagerView>
