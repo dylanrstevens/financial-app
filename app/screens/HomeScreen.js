@@ -128,6 +128,11 @@ const HomeScreen = ({navigation}) => {
                 tx.executeSql("delete from Accounts where account_id = ?", [id])
             }
         )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Budgets where account_id = ?", [id])
+            }
+        )
 
         getAccountData()
     }
