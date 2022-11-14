@@ -143,8 +143,14 @@ const HomeScreen = ({navigation}) => {
                 tx.executeSql("delete from Accounts")
             }
         )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Budgets")
+            }
+        )
     }
 
+    
     const changeColor = (col, id) => {
         db.transaction(
             (tx) => {

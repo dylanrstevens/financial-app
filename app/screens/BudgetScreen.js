@@ -26,6 +26,8 @@ import BudgetAccount from '../components/BudgetAccount';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import PagerView from 'react-native-pager-view';
 import Collapsible from 'react-native-collapsible';
+import Animated, {BounceIn, BounceInRight, BounceInLeft, FadeIn, StretchInX, ZoomIn} from 'react-native-reanimated';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
 import * as SQLite from "expo-sqlite"
 import NetWorth from '../components/NetWorth';
@@ -39,6 +41,8 @@ const BudgetScreen = ({navigation}) => {
     const [accData, setAccData] = useState([])
     const [budgetData, setBudgetData] = useState([])
     const [expanded, setExpanded] = useState(true)
+
+    const [thisMonth, setThisMonth] = useState(0)
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -189,28 +193,34 @@ const BudgetScreen = ({navigation}) => {
         return (vals)
     }
 
-    const renderPages = () => {
+    const renderPages = (curMonth) => {
         const pages = []
-        for (let iter in monthPages) {
-            const page = monthPages[iter]
+        if (monthPages.length > 0) {
+            const page = monthPages[curMonth]
             pages.push(
-                <ScrollView
+                <Animated.ScrollView
+                entering={StretchInX.springify()}
+                duration={100}
                 className="bg-white"
                 contentContainerStyle={{
                     paddingBottom: 0,
                 }}
-                key={iter}
+                key={page.month_id}
                 >
                     {/**Month title */}
                     <View className="py-2">
                         <View className="items-center">
-                            <View className="w-11/12 rounded-3xl py-4 bg-white shadow-sm shadow-gray-500">
-                                <View className="flex-row items-center justify-between px-4">
-                                    <ArrowLeftIcon color={'#000000'} size={20}></ArrowLeftIcon>
+                            <View className="w-11/12 rounded-3xl bg-white shadow-sm shadow-gray-500">
+                                <View className="flex-row items-center justify-between">
+                                    <Ripple rippleCentered={true} className="px-4 py-4" onPress={() => changeMonthLeft()}>
+                                        <ArrowLeftIcon color={'#000000'} size={20}></ArrowLeftIcon>
+                                    </Ripple>
                                     <Text className="font-extrabold text-gray-500 text-xl">
                                         {monthNames[new Date(page.month).getMonth()]} {new Date(page.month).getFullYear()}
                                     </Text>
-                                    <ArrowRightIcon color={'#000000'} size={20}></ArrowRightIcon>
+                                    <Ripple rippleCentered={true} className="px-4 py-4" onPress={() => changeMonthRight()}>
+                                        <ArrowRightIcon color={'#000000'} size={20}></ArrowRightIcon>                                        
+                                    </Ripple>
                                 </View>
                             </View>
                         </View>
@@ -241,12 +251,25 @@ const BudgetScreen = ({navigation}) => {
                             {renderBudgetAccounts(page)}
                         </View>
                     </View>
-                </ScrollView>
+                </Animated.ScrollView>
             )
         }
         return (pages)
     }
 
+    const changeMonthLeft = () => {
+        if (thisMonth == 0) {
+            return
+        }
+        else {setThisMonth(thisMonth-1)}
+    }
+
+    const changeMonthRight = () => {
+        if (thisMonth == 11) {
+            return
+        }
+        else {setThisMonth(thisMonth+1)}
+    }
 
 
     useFocusEffect(
@@ -261,6 +284,8 @@ const BudgetScreen = ({navigation}) => {
             };
         }, [])
     );
+
+    //console.log(thisMonth)
 
     return (
         <View className="flex-1">
@@ -285,9 +310,9 @@ const BudgetScreen = ({navigation}) => {
             </LinearGradient>
 
             {/**BODY PAGES */}
-            <PagerView className="flex-1" initialPage={0}>
-                {renderPages()}
-            </PagerView>
+            <View className="flex-1 bg-white">
+                {renderPages(thisMonth)}
+            </View>
         </View>
     )
 }
