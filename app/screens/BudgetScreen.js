@@ -48,6 +48,8 @@ const BudgetScreen = ({navigation}) => {
     "July", "August", "September", "October", "November", "December"
     ];
 
+    //{ getDate, getNextMonth, initializeMonthInserts, insertMonth, selectMonths, getAccData, addAccToBudget, deleteAccFromBudget, getBudgetData, AddMaxAmtToBudgetAccount, renderBudgetAccounts, }
+
     const getDate = () => {
         const d = new Date()
         setDate([d])
@@ -271,10 +273,28 @@ const BudgetScreen = ({navigation}) => {
         else {setThisMonth(thisMonth+1)}
     }
 
+    const initMonth = () => {
+        const d = new Date()
+        //console.log(d.getMonth())
+        for (let i = 0; i < 12; i++) {
+            //console.log(i)
+            if (monthPages.length != 0) {
+                //console.log(d.getMonth())
+                const iter_date = new Date(monthPages[i]["month"])
+                //console.log(iter_date.getMonth())
+                if (iter_date.getMonth() == d.getMonth()) {        
+                    //console.log(i)
+                    return i
+                }
+            }
+        }
+        
+    }
 
     useFocusEffect(
         React.useCallback(() => {
             //Insert functions here
+            initMonth()
             getDate()
             initializeMonthInserts()
             selectMonths()
@@ -301,9 +321,9 @@ const BudgetScreen = ({navigation}) => {
                             <Text className="font-bold text-3xl text-center p-3 text-white">
                                 Budget
                             </Text>
-                            <Ripple rippleCentered={true} className="rounded-3xl p-3">
-                                <PlusIcon size={35} color="#FFFFFF"/>
-                            </Ripple>
+                            <View rippleCentered={true} className="rounded-3xl p-3">
+                                <PlusIcon size={35} color="#FFFFFF00"/>
+                            </View>
                         </View>
                     </View>
                 </SafeAreaView>
