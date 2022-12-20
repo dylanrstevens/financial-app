@@ -42,7 +42,7 @@ const BudgetScreen = ({navigation}) => {
     const [budgetData, setBudgetData] = useState([])
     const [expanded, setExpanded] = useState(true)
 
-    const [thisMonth, setThisMonth] = useState(0)
+    const [thisMonth, setThisMonth] = useState([0])
 
     const monthNames = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -91,10 +91,10 @@ const BudgetScreen = ({navigation}) => {
                 tx.executeSql("select * from Dates", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setMonthPages(values)
-                    //console.log(values)
                 }
             )}            
         )
+        console.log("selectMonths CALLED") 
     }
 
     const getAccData = () => {
@@ -106,6 +106,7 @@ const BudgetScreen = ({navigation}) => {
                 }
             )}            
         )
+        console.log("getAccData CALLED") 
     }
 
     const addAccToBudget = (m_id, acc_id) => {
@@ -140,6 +141,7 @@ const BudgetScreen = ({navigation}) => {
                 }
             )}            
         )
+        console.log("getBudgetData CALLED") 
     }
 
     const AddMaxAmtToBudgetAccount = (m_amt, r_amt, id) => {
@@ -196,6 +198,7 @@ const BudgetScreen = ({navigation}) => {
     }
 
     const renderPages = (curMonth) => {
+        console.log("renderPages RENDERED")
         const pages = []
         if (monthPages.length > 0) {
             const page = monthPages[curMonth]
@@ -260,21 +263,22 @@ const BudgetScreen = ({navigation}) => {
     }
 
     const changeMonthLeft = () => {
-        if (thisMonth == 0) {
+        if (thisMonth[0] == 0) {
             return
         }
-        else {setThisMonth(thisMonth-1)}
+        else {setThisMonth([thisMonth[0]-1])}
     }
 
     const changeMonthRight = () => {
-        if (thisMonth == 11) {
+        if (thisMonth[0] == 11) {
             return
         }
-        else {setThisMonth(thisMonth+1)}
+        else {setThisMonth([thisMonth[0]+1])}
     }
 
     const initMonth = () => {
         const d = new Date()
+        let setval = [0]
         //console.log(d.getMonth())
         for (let i = 0; i < 12; i++) {
             //console.log(i)
@@ -284,18 +288,18 @@ const BudgetScreen = ({navigation}) => {
                 //console.log(iter_date.getMonth())
                 if (iter_date.getMonth() == d.getMonth()) {        
                     //console.log(i)
-                    return i
+                    setval[0] = i
                 }
             }
         }
+        console.log("initMonth CALLED") 
+        setThisMonth(setval)
         
     }
 
     useFocusEffect(
         React.useCallback(() => {
             //Insert functions here
-            initMonth()
-            getDate()
             initializeMonthInserts()
             selectMonths()
             getAccData()
@@ -304,6 +308,10 @@ const BudgetScreen = ({navigation}) => {
             };
         }, [])
     );
+    
+    useEffect(() => {
+        initMonth()
+    }, [monthPages])
 
     //console.log(thisMonth)
 
@@ -331,7 +339,7 @@ const BudgetScreen = ({navigation}) => {
 
             {/**BODY PAGES */}
             <View className="flex-1 bg-white">
-                {renderPages(thisMonth)}
+                {renderPages(thisMonth[0])}
             </View>
         </View>
     )
