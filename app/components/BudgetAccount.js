@@ -56,7 +56,7 @@ const BudgetAccount = ({AddMaxAmtToBudgetAccount, val, name, money, max_amt, rem
                             mask={dollarMask}>
                         </MaskInput>
                         <View className="pt-4 pb-6">
-                            <Ripple className="border py-3 px-5 items-center rounded-xl" rippleCentered={true} onPress={() => {const amt = parseFloat(ammountRemaining.substring(1).replace(/\,/g,"")); AddMaxAmtToBudgetAccount(amt, amt, val); setAmmountRemaining("")}}>
+                            <Ripple className="shadow-sm shadow-gray-400 bg-white py-3 px-5 items-center rounded-xl" rippleCentered={true} onPress={() => {const amt = parseFloat(ammountRemaining.substring(1).replace(/\,/g,"")); AddMaxAmtToBudgetAccount(amt, amt, val); setAmmountRemaining("")}}>
                                 <Text>Set</Text>
                             </Ripple>
                         </View>

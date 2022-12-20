@@ -137,7 +137,7 @@ const HomeScreen = ({navigation}) => {
         getAccountData()
     }
 
-    const deleteALLAccounts = () => {
+    const deleteAllData = () => {
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Accounts")
@@ -146,6 +146,11 @@ const HomeScreen = ({navigation}) => {
         db.transaction(
             (tx) => {
                 tx.executeSql("delete from Budgets")
+            }
+        )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Dates")
             }
         )
     }

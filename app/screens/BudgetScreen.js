@@ -1,33 +1,21 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView, Keyboard, Pressable, Easing } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import CircularProgress, { ProgressRef } from 'react-native-circular-progress-indicator';
-import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
-import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import {
-    AdjustmentsVerticalIcon,
     Bars3Icon,
-    MagnifyingGlassCircleIcon,
-    MinusCircleIcon,
     MinusIcon,
-    PlusCircleIcon,
-    SquaresPlusIcon,
-    PlusSmallIcon,
     PlusIcon,
-    MinusSmallIcon,
-    UserIcon,
-    BanknotesIcon,
     ArrowLeftIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
+    ExclamationTriangleIcon,
 } from "react-native-heroicons/outline"
 import BudgetAccount from '../components/BudgetAccount';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import PagerView from 'react-native-pager-view';
 import Collapsible from 'react-native-collapsible';
-import Animated, {BounceIn, BounceInRight, BounceInLeft, FadeIn, StretchInX, ZoomIn} from 'react-native-reanimated';
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
+import Animated, {StretchInX} from 'react-native-reanimated';
+import CheckBox from 'expo-checkbox';
 
 import * as SQLite from "expo-sqlite"
 import NetWorth from '../components/NetWorth';
@@ -41,6 +29,8 @@ const BudgetScreen = ({navigation}) => {
     const [accData, setAccData] = useState([])
     const [budgetData, setBudgetData] = useState([])
     const [expanded, setExpanded] = useState(true)
+    const [resetModal, setResetModal] = useState(false)
+    const [proceedReset, setProceedReset] = useState(false)
 
     const [thisMonth, setThisMonth] = useState([0])
 
@@ -152,6 +142,23 @@ const BudgetScreen = ({navigation}) => {
         );
         getBudgetData()
     }; 
+
+    const resetData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Dates")
+            }
+        )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("delete from Budgets")
+            }
+        )
+        initializeMonthInserts()
+        selectMonths()
+        getAccData()
+        getBudgetData()
+    }
 
     const renderBudgetAccounts = (page) => {
         const vals = []
@@ -297,6 +304,19 @@ const BudgetScreen = ({navigation}) => {
         
     }
 
+    const confirmButton = () => {
+        if (proceedReset) {
+            return (
+                <Ripple className="py-3 px-5 items-center bg-white shadow-sm shadow-gray-400 rounded-xl" rippleCentered={true} onPress={() => {resetData()}}>
+                    <Text>Confirm</Text>
+                </Ripple> 
+            )
+        }
+        else {
+            return
+        }
+    }
+
     useFocusEffect(
         React.useCallback(() => {
             //Insert functions here
@@ -317,6 +337,45 @@ const BudgetScreen = ({navigation}) => {
 
     return (
         <View className="flex-1">
+            <Modal 
+            isVisible={resetModal}
+            onSwipeComplete={() => {setResetModal(false); setProceedReset(false);}}
+            swipeDirection="down"
+            backdropOpacity={0.4}
+            animationInTiming={300}
+            animationOutTiming={300}
+            avoidKeyboard={false}
+            >
+                <Pressable onPress={Keyboard.dismiss} className="h-screen justify-center">
+                    <View className="bg-white rounded-3xl items-center">
+                        <View className="flex-row items-center">
+                            <ExclamationTriangleIcon color={"#a32f2f"} size={45}/>
+                            <Text className="font-bold text-2xl py-5 px-3 text-[#a32f2f]">
+                                Warning
+                            </Text>
+                        </View>
+                        <Text className="font-bold text-2xl pb-5 px-3 text-[#4B5563]">
+                                Reset Budgets
+                            </Text>
+                        <Text className="text-center text-lg font-semibold pb-5 px-4 text-[#4B5563]">
+                            The following will erase all your budget data, and reset the first month to the month you are currently in. Accounts will not be affected.
+                        </Text>
+                        <View className="flex-row items-center pb-5">
+                            <Text className="text-center text-lg font-semibold px-4 text-[#4B5563]">
+                                Would you like to proceed?
+                            </Text>
+                            <CheckBox
+                            disabled={false}
+                            value={proceedReset}
+                            onValueChange={(value) => setProceedReset(value)} 
+                            />
+                        </View>
+                        <View className="pb-5">
+                            {confirmButton()}
+                        </View>
+                    </View>
+                </Pressable>
+            </Modal>
             {/**HEADER */}
             <LinearGradient colors={['#b7f4e3', '#e2cbf9']}>
                 <SafeAreaView className=" pt-5 border-b-2 border-gray-300">
@@ -329,9 +388,9 @@ const BudgetScreen = ({navigation}) => {
                             <Text className="font-bold text-3xl text-center p-3 text-white">
                                 Budget
                             </Text>
-                            <View rippleCentered={true} className="rounded-3xl p-3">
-                                <PlusIcon size={35} color="#FFFFFF00"/>
-                            </View>
+                            <Ripple rippleCentered={true} className="rounded-3xl p-3" onPress={() => {setResetModal(true)}}>
+                                <ExclamationTriangleIcon size={35} color="#FFFFFF"/>
+                            </Ripple>
                         </View>
                     </View>
                 </SafeAreaView>
