@@ -1,24 +1,9 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView, Pressable, Keyboard } from 'react-native'
-import React, { useLayoutEffect, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-    AdjustmentsVerticalIcon,
     Bars3Icon,
     MagnifyingGlassCircleIcon,
-    MinusCircleIcon,
-    MinusIcon,
-    PlusCircleIcon,
     SquaresPlusIcon,
-    PlusIcon,
-    UserIcon,
-    WalletIcon,
-    TagIcon,
-    HomeIcon,
-    AcademicCapIcon,
-    BanknotesIcon,
-    MusicalNoteIcon,
-    TvIcon,
-    WrenchIcon,
-    ShoppingBagIcon,
     ArrowUturnLeftIcon
 } from "react-native-heroicons/outline"
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"

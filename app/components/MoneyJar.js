@@ -1,15 +1,8 @@
-import { View, Text, TouchableOpacity, Keyboard, Pressable, TextInput, ScrollView } from 'react-native'
+import { View, Text, Keyboard, Pressable } from 'react-native'
 import React, { useState } from 'react'
 import {
-    AdjustmentsVerticalIcon,
-    Bars3Icon,
-    MagnifyingGlassCircleIcon,
-    MinusCircleIcon,
     MinusIcon,
-    PlusCircleIcon,
-    SquaresPlusIcon,
     PlusIcon,
-    UserIcon,
     WalletIcon,
     TagIcon,
     HomeIcon,

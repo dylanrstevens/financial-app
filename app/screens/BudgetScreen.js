@@ -18,7 +18,6 @@ import Animated, {StretchInX} from 'react-native-reanimated';
 import CheckBox from 'expo-checkbox';
 
 import * as SQLite from "expo-sqlite"
-import NetWorth from '../components/NetWorth';
 const db = SQLite.openDatabase("AppDB");
 
 const BudgetScreen = ({navigation}) => {
