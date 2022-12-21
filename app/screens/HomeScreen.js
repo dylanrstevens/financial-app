@@ -1,15 +1,10 @@
 import { View, Text, SafeAreaView, TextInput, ScrollView, Pressable, Keyboard } from 'react-native'
-import React, { useLayoutEffect, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
-    AdjustmentsVerticalIcon,
     Bars3Icon,
     MagnifyingGlassCircleIcon,
-    MinusCircleIcon,
-    MinusIcon,
-    PlusCircleIcon,
     SquaresPlusIcon,
-    PlusIcon,
-    UserIcon
+    ArrowUturnLeftIcon
 } from "react-native-heroicons/outline"
 //import { SquaresPlusIcon } from "react-native-heroicons/solid"
 import MoneyJar from '../components/MoneyJar'
@@ -17,6 +12,7 @@ import Ripple from 'react-native-material-ripple'
 import Modal from "react-native-modal";
 import MaskInput, { createNumberMask } from 'react-native-mask-input';
 import { LinearGradient } from 'expo-linear-gradient';
+
 
 import * as SQLite from "expo-sqlite"
 const db = SQLite.openDatabase("AppDB");
@@ -28,6 +24,9 @@ const HomeScreen = ({navigation}) => {
     const [accountName, setAccountName] = useState("")
     const [accountValue, setAccountValue] = useState("")
     const [data, setData] = useState([])
+    const [dates, setDates] = useState([])
+    const [searchVal, setSearchVal] = useState("")
+
 
     const AddAccount = (name, money) => {
         // is text empty?
@@ -37,7 +36,7 @@ const HomeScreen = ({navigation}) => {
     
         db.transaction(
           (tx) => {
-            tx.executeSql("insert into Accounts (name, money) values (?, ?)", [name, money]);
+            tx.executeSql("insert into Accounts (account_name, account_amt, icon, color) values (?, ?, 0, 0)", [name, money]);
           },
         );
 
@@ -50,7 +49,8 @@ const HomeScreen = ({navigation}) => {
                 tx.executeSql("select * from Accounts", [], (_, { rows: {_array} }) => {
                     const values = _array;
                     setData(values)
-                    console.log("get data")
+                    //console.log("get data")
+                    console.log(values)
                 }
             )}            
         )
@@ -59,58 +59,128 @@ const HomeScreen = ({navigation}) => {
     const AddToAccountValue = (a_amt, a_id, b_amt, b_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money+? where id=?;", [a_amt, a_id]);
+            tx.executeSql("update Accounts set account_amt = account_amt+? where account_id=?;", [a_amt, a_id], {}, (_, error) => {
+                console.log(error)
+            });
             },
         );
         getAccountData()
     }; 
 
-    const SubFromAccountValue = (a_amt, a_id, b_amt, b_id) => {
+    const SubFromAccountValue = (a_amt, a_id, b_amt, b_id, m_id) => {
         db.transaction(
             (tx) => {
-            tx.executeSql("update Accounts set money = money-? where id=?;", [a_amt, a_id]);
+            tx.executeSql("update Accounts set account_amt = account_amt-? where account_id=?;", [a_amt, a_id]);
             },
         );
         db.transaction(
             (tx) => {
-                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where budget_id = ?;", [b_amt, b_id])
+                tx.executeSql("update Budgets set remaining_amt = remaining_amt-? where account_id = ? and month_id = ?;", [b_amt, b_id, m_id], {}, (_, error) => {
+                    console.log(error)
+                })
             },
         );
         getAccountData()
-        console.log(b_id)
-    }; 
+    };
+
+    const getCurrentMonthId = () => {
+        const thisMonth = new Date()
+        for (let iter in dates) {
+            const d = new Date(dates[iter].month)
+            if (d.getFullYear() == thisMonth.getFullYear() && d.getMonth() == thisMonth.getMonth()) {
+                return dates[iter].month_id
+            }
+        }
+        console.log("failed to get proper month")
+        return 0;
+    }
+
+    const selectMonths = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("select * from Dates", [], (_, { rows: {_array} }) => {
+                    const values = _array;
+                    setDates(values)
+                    //console.log(values)
+                }
+            )}            
+        )
+    }
 
     const deleteAccount = (id) => {
-
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Accounts where id = ?", [id])
+                tx.executeSql("delete from Accounts where account_id = ?", [id])
             }
         )
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Budgets where budget_id = ?", [id])
+                tx.executeSql("delete from Budgets where account_id = ?", [id])
+            }
+        )
+
+        getAccountData()
+    }
+
+    const deleteAllData = () => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("drop table Accounts")
+            }
+        )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("drop table Budgets")
+            }
+        )
+        db.transaction(
+            (tx) => {
+                tx.executeSql("drop table Dates")
+            }
+        )
+    }
+
+    
+    const changeColor = (col, id) => {
+        db.transaction(
+            (tx) => {
+                tx.executeSql("update Accounts set color = ? where account_id = ?", [col, id])
             }
         )
         getAccountData()
     }
 
-    const deleteALL = () => {
-
+    const changeIcon = (ico, id) => {
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Accounts")
+                tx.executeSql("update Accounts set icon = ? where account_id = ?", [ico, id])
             }
         )
+        getAccountData()
     }
 
+    
     useEffect(() => {
-    db.transaction((tx) => {
-        tx.executeSql(
-        "create table if not exists Accounts (id integer primary key not null, name text, money real); create table if not exists Budgets (budget_id integer primary key, max_amt real, remaining_amt real);"
-        );
-    });
+        //deleteAllData()
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Accounts (account_id integer primary key not null, account_name text, account_amt real, icon integer, color integer);"
+            );
+        });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Dates (month_id integer primary key not null, month text);"
+            );
+        });
+        db.transaction((tx) => {
+            tx.executeSql(
+            "create table if not exists Budgets (budget_id integer primary key not null, month_id integer, account_id integer, max_amt real, remaining_amt real, FOREIGN KEY(month_id) REFERENCES Dates(month_id), FOREIGN KEY(account_id) REFERENCES Accounts(account_id), UNIQUE(month_id, account_id));"
+            );
+        });
+
+
     }, []);
+
     
 
     const dollarMask = createNumberMask({
@@ -128,9 +198,41 @@ const HomeScreen = ({navigation}) => {
         setShowAddAcc(false)
     }
 
+    const renderCardsViaSearch = () => {
+        const cards = []
+        if (searchVal == "") {
+            for (let iter in data) {
+                const accounts = data[iter]
+                cards.push(
+                    <View className="pt-4 w-11/12" key={accounts.account_id}>
+                    <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                    </View>
+                )
+            }
+            return (
+                cards
+            )
+        }
+        else {
+            const subdata = data.filter(account => account.account_name.includes(searchVal))
+            for (let iter in subdata) {
+                const accounts = subdata[iter]
+                cards.push(
+                    <View className="pt-4 w-11/12" key={accounts.account_id}>
+                    <MoneyJar changeIcon={changeIcon} changeColor={changeColor} icon={accounts.icon} color={accounts.color} getCurrentMonthID={getCurrentMonthId} getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.account_name} ammount={accounts.account_amt} key={accounts.account_id} val={accounts.account_id}></MoneyJar>
+                    </View>
+                )
+            }
+            return (
+                cards
+            )
+        }
+    }
+
     useEffect(() => {
         getAccountData()
-        console.log("get initial acc data")
+        selectMonths()
+        //console.log("get initial acc data")
     }, []);
     //getAccountData()
     
@@ -196,12 +298,14 @@ const HomeScreen = ({navigation}) => {
                     </View>
 
                     {/**Search */}
-                    <View className="flex-row items-center space-x-2 pb-6 mx-4">
-                        <View className="flex-row space-x-2 flex-1 bg-gray-100 p-1.5 rounded-md">
-                            <MagnifyingGlassCircleIcon color={"#000000"}/>
-                            <TextInput placeholder='Search' keyboardType="default"/>
+                    <View className="flex-row justify-space items-center pb-6 mx-4">
+                        <View className="flex-row space-x-2 bg-gray-100 p-1.5 rounded-md w-11/12">
+                            <MagnifyingGlassCircleIcon color={"#4B5563"}/>
+                            <TextInput placeholder='Search' value={searchVal} onChangeText={(text) => {setSearchVal(text)}} keyboardType="default" className="flex-grow"/>
                         </View>
-                        <AdjustmentsVerticalIcon color={"#FFFFFF"}/>
+                        <Ripple rippleCentered={true} className="py-1.5 flex-grow items-center" onPress={() => setSearchVal("")}>
+                            <ArrowUturnLeftIcon color={"#FFFFFF"}/>
+                        </Ripple>
                     </View>
                 </View>
             </SafeAreaView>
@@ -216,11 +320,7 @@ const HomeScreen = ({navigation}) => {
                 >
                     <View className="items-center">
                         {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
-                        {data.map((accounts) => (
-                            <View className="pt-4 w-11/12" key={accounts.id}>
-                            <MoneyJar getAccountData={getAccountData} deleteAccount={deleteAccount} AddToAccountValue={AddToAccountValue} SubFromAccountValue={SubFromAccountValue} title={accounts.name} ammount={accounts.money} key={accounts.id} val={accounts.id}></MoneyJar>
-                            </View>
-                        ))}
+                        {renderCardsViaSearch()}
                     </View>
                 
                 </ScrollView>

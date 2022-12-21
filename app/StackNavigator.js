@@ -1,6 +1,5 @@
-import { View, Text, SafeAreaView } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { View } from 'react-native'
+import React from 'react'
 import HomeScreen from './screens/HomeScreen';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import BudgetScreen from './screens/BudgetScreen';
@@ -8,9 +7,7 @@ import {
     CreditCardIcon,
     ClipboardDocumentCheckIcon
 } from "react-native-heroicons/outline"
-import { LinearGradient } from 'expo-linear-gradient';
 
-const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = (props) => {
@@ -30,7 +27,7 @@ const StackNavigator = () => {
     return (
         <Drawer.Navigator useLegacyImplementation initialRouteName='Your Accounts' screenOptions={
             {
-                headerShown:false
+                headerShown:false,
             }
         }
         drawerContent={(props) => <CustomDrawer {...props}/>}
@@ -52,7 +49,7 @@ const StackNavigator = () => {
                         fontSize:16,
                         padding:20
                     },
-                    
+                    lazy:false
                 }}
             />
             <Drawer.Screen
@@ -72,7 +69,7 @@ const StackNavigator = () => {
                         fontSize:16,
                         padding:20,
                     },
-
+                    lazy:false
                     
                 }}
             />
