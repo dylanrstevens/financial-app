@@ -50,7 +50,7 @@ const HomeScreen = ({navigation}) => {
                     const values = _array;
                     setData(values)
                     //console.log("get data")
-                    //console.log(values)
+                    console.log(values)
                 }
             )}            
         )
@@ -125,17 +125,17 @@ const HomeScreen = ({navigation}) => {
     const deleteAllData = () => {
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Accounts")
+                tx.executeSql("drop table Accounts")
             }
         )
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Budgets")
+                tx.executeSql("drop table Budgets")
             }
         )
         db.transaction(
             (tx) => {
-                tx.executeSql("delete from Dates")
+                tx.executeSql("drop table Dates")
             }
         )
     }
@@ -161,6 +161,7 @@ const HomeScreen = ({navigation}) => {
 
     
     useEffect(() => {
+        //deleteAllData()
         db.transaction((tx) => {
             tx.executeSql(
             "create table if not exists Accounts (account_id integer primary key not null, account_name text, account_amt real, icon integer, color integer);"

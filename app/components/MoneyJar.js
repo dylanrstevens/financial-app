@@ -60,7 +60,25 @@ const MoneyJar = ({getCurrentMonthID, changeColor, changeIcon, icon, color, getA
         setShowModal(false)
         setAccountValue("")
     }
+
+    const ammountRender = (amt) => {
+        if (amt == null) {
+            return 0
+        }
+        else {
+            return amt.toLocaleString(undefined, {maximumFractionDigits:2})
+        }
+    }
     
+    const renderTitle = (t) => {
+        if (t == null) {
+            return ""
+        }
+        else {
+            return t.toUpperCase()
+        }
+    }
+
     return (
         <View>
             {/**Modal for edit account */}
@@ -81,7 +99,7 @@ const MoneyJar = ({getCurrentMonthID, changeColor, changeIcon, icon, color, getA
                                 {title}
                             </Text>
                             <Text className="font-normal text-lg text-center text-[#4B5563]">
-                                Current: ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
+                                Current: ${ammountRender(ammount)}
                             </Text>
                         </View>
                         {/**Edit ammounts */}
@@ -145,10 +163,10 @@ const MoneyJar = ({getCurrentMonthID, changeColor, changeIcon, icon, color, getA
                     
                     <View className="flex-col px-4">
                         <Text className="text-md font-extrabold text-gray-400">
-                                {title.toUpperCase()}
+                                {renderTitle(title)}
                         </Text>
                         <Text className="font-normal text-xl text-[#4B5563]">
-                                ${ammount.toLocaleString(undefined, {maximumFractionDigits:2})}
+                                ${ammountRender(ammount)}
                         </Text>
                 </View>
             </Ripple>

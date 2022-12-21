@@ -173,6 +173,15 @@ const BudgetScreen = ({navigation}) => {
         return (vals)
     }
 
+    const ammountRender = (amt) => {
+        if (amt == null) {
+            return 0
+        }
+        else {
+            return amt.toLocaleString(undefined, {maximumFractionDigits:2})
+        }
+    }
+
     const renderAccounts = (page) => {
         const vals = []
         for (let iter in accData) {
@@ -185,7 +194,7 @@ const BudgetScreen = ({navigation}) => {
                                 {accounts.account_name}
                             </Text>
                             <Text className="font-light text-xl pl-2 pr-2 text-gray-600">
-                                ${accounts.account_amt.toLocaleString(undefined, {maximumFractionDigits:2})}
+                                ${ammountRender(accounts.account_amt)}
                             </Text>
                         </View>
                         <View className="flex-row">
