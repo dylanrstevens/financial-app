@@ -50,7 +50,7 @@ const HomeScreen = ({navigation}) => {
                     const values = _array;
                     setData(values)
                     //console.log("get data")
-                    console.log(values)
+                    //console.log(values)
                 }
             )}            
         )
@@ -319,7 +319,6 @@ const HomeScreen = ({navigation}) => {
                     }}
                 >
                     <View className="items-center">
-                        {/**ENTER VALUE IN CLASSNAME ON THIS LINE FOR ACCOUNT CARD PADDING */}
                         {renderCardsViaSearch()}
                     </View>
                 
